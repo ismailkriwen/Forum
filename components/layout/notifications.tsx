@@ -70,7 +70,7 @@ export const Notifications = ({ session }: { session: Session | null }) => {
     <>
       <Dropdown placement="bottom-end" radius="sm">
         <DropdownTrigger as="button">
-          <div className="relative cursor-pointer">
+          <div className="relative cursor-pointer flex items-center">
             <Badge
               content={notifications?.length}
               isInvisible={!isVisible}

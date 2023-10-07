@@ -146,7 +146,7 @@ export const SignIn = () => {
                     <>
                       <Button
                         className="w-full"
-                        onPress={() => signIn("google")}
+                        onClick={() => signIn("google")}
                         variant="ghost"
                       >
                         <FaGoogle className="w-5 h-5 mr-2" />

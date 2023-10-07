@@ -11,16 +11,6 @@ export const routes = [
     href: "/",
     icon: Home,
   },
-  /* {
-    label: "About",
-    route: "/about",
-    icon: BsExclamationCircle,
-  },
-  {
-    label: "Contact",
-    route: "/contact",
-    icon: Phone,
-  }, */
   {
     label: "Profile",
     href: `/profile/`,
@@ -48,7 +38,12 @@ export const NavbarLinks = () => {
           href={route.href}
           as={route.href}
           key={route.label}
-          className={cn("flex items-center justify-center transition", pathname === route.href ? "font-bold text-danger" : "text-white hover:text-danger/70")}
+          className={cn(
+            "flex items-center justify-center transition",
+            pathname === route.href
+              ? "font-bold text-danger"
+              : "text-white hover:text-danger/70"
+          )}
         >
           <div className="w-6 h-6 md:hidden">
             <route.icon />
