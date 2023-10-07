@@ -1,0 +1,38 @@
+import { Navbar } from "@/app/(admin)/components/navbar";
+import { AdminProviders } from "@/app/(admin)/components/providers";
+import { Sidebar } from "@/app/(admin)/components/sidebar";
+import { ProvidersContainer } from "@/components/providers/main";
+import { ThemeController } from "@/components/theme";
+import { SITE_NAME } from "@/constants";
+import "../globals.css";
+
+export const metadata = {
+  title: `${SITE_NAME} | Admin`,
+  description:
+    "Discover the Ultimate Blogging Hub: Your Go-To Source for Trending Topics, Expert Advice, and Inspiring Stories! Explore a diverse range of engaging and informative articles on everything from lifestyle and health to technology and travel. Join our vibrant online community and stay up-to-date with the latest trends, tips, and insights. Whether you're a seasoned blogger or a curious reader, our blog website has something for everyone. Start exploring today and unlock a world of knowledge, entertainment, and inspiration!",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ProvidersContainer>
+          <main className="w-full h-full flex flex-row justify-start">
+            <AdminProviders>
+              <Sidebar />
+              <section className="w-full h-full flex-1">
+                <Navbar />
+                <section className="container pt-4">{children}</section>
+              </section>
+            </AdminProviders>
+          </main>
+          <ThemeController />
+        </ProvidersContainer>
+      </body>
+    </html>
+  );
+}
