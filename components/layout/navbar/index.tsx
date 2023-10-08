@@ -33,7 +33,8 @@ export const Navbar = () => {
         <div>
           {session?.user ? (
             <div className="flex items-center justify-end gap-3">
-              <span className="max-md:hidden">
+              <span className="max-md:hidden flex items-center gap-x-3">
+                <Notifications session={session} />
                 <AvatarProfile />
               </span>
               <div className="md:hidden flex gap-x-1 items-center">

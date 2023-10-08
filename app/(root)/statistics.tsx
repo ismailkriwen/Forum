@@ -30,7 +30,7 @@ export const Statistics = () => {
 
   return (
     <>
-      <div className="my-4 dark:bg-neutral-900 bg-neutral-200 py-2 px-4 rounded">
+      <div className="my-4 dark:bg-neutral-900 bg-neutral-200 py-2 px-4 rounded overflow-hidden break-words">
         <div className="pb-1 font-semibold">Legends</div>
         <div className="pl-2">
           {roles.map((role, idx) => (
