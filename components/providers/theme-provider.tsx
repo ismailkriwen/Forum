@@ -10,6 +10,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       themes={["light", "dark"]}
       enableSystem={false}
       enableColorScheme={true}
+      defaultTheme="dark"
     >
       {children}
     </NextThemeProvider>

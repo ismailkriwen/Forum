@@ -5,6 +5,7 @@ import { SignOutProvider } from "@/components/hooks/useSignOut";
 import { SignUpProvider } from "@/components/hooks/useSignUp";
 import { SessionProvider } from "./session-provider";
 import { ThemeProvider } from "./theme-provider";
+import { ReactQueryProvider } from "./react-query";
 
 export const ProvidersContainer = ({
   children,
@@ -12,14 +13,16 @@ export const ProvidersContainer = ({
   children: React.ReactNode;
 }) => {
   return (
-    <SessionProvider>
-      <ThemeProvider>
-        <SignInProvider>
-          <SignOutProvider>
-            <SignUpProvider>{children}</SignUpProvider>
-          </SignOutProvider>
-        </SignInProvider>
-      </ThemeProvider>
-    </SessionProvider>
+    <ReactQueryProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <SignInProvider>
+            <SignOutProvider>
+              <SignUpProvider>{children}</SignUpProvider>
+            </SignOutProvider>
+          </SignInProvider>
+        </ThemeProvider>
+      </SessionProvider>
+    </ReactQueryProvider>
   );
 };

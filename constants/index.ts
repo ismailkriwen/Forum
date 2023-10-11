@@ -1,4 +1,4 @@
-const SITE_NAME = "Forum";
+const SITE_NAME = "Kripsa";
 
 const textColors = {
   Admin: "text-danger",

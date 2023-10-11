@@ -56,9 +56,9 @@ export const authOptions: NextAuthOptions = {
         where: { email: token.email },
         select: { email: true, image: true, name: true, role: true },
       });
-      session.user.email = user?.email as Role;
-      session.user.image = user?.image as Role;
-      session.user.name = user?.name as Role;
+      session.user.email = user?.email;
+      session.user.image = user?.image;
+      session.user.name = user?.name;
       session.user.role = user?.role as Role;
 
       return session;

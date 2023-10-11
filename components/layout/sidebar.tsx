@@ -9,6 +9,7 @@ import { routes } from "./navbar/links";
 import { useSignOutContext } from "../hooks/useSignOut";
 import { LogOut, Settings, UserCog } from "lucide-react";
 import { Role } from "@prisma/client";
+import { unslug } from "@/lib/slugify";
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -20,23 +21,29 @@ export const Sidebar = () => {
     <div className="space-y-4 py-4 flex justify-between flex-col h-full bg-blue-800/20 text-white">
       <div className="px-3 py-2 flex-1">
         <div className="space-y-1 mt-5">
-          {routes.map((route) => (
-            <Link
-              href={route.href}
-              key={route.href}
-              className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer",
-                pathname === route.href
-                  ? "text-white bg-white/10"
-                  : "text-zinc-400"
-              )}
-            >
-              <div className="flex items-center flex-1">
-                <route.icon className="h-5 w-5 mr-3" />
-                {route.label}
-              </div>
-            </Link>
-          ))}
+          {routes.map((route) => {
+            const path =
+              route.href === "/profile"
+                ? `/profile/${session?.user?.name}`
+                : route.href;
+            return (
+              <Link
+                href={path}
+                key={route.href}
+                className={cn(
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer",
+                  unslug(pathname) === path
+                    ? "text-white bg-white/10"
+                    : "text-zinc-400"
+                )}
+              >
+                <div className="flex items-center flex-1">
+                  <route.icon className="h-5 w-5 mr-3" />
+                  {route.label}
+                </div>
+              </Link>
+            );
+          })}
           <Link
             href={`/profile/${session?.user?.name}/settings`}
             className="text-sm group flex p-3 w-full justify-start font-medium cursor-pointer text-zinc-400"

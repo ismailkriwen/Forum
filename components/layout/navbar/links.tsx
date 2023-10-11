@@ -1,7 +1,9 @@
 "use client";
 
+import { unslug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
 import { Home, Mail, User, Users } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,7 +15,7 @@ export const routes = [
   },
   {
     label: "Profile",
-    href: `/profile/`,
+    href: "/profile",
     icon: User,
   },
   {
@@ -29,28 +31,35 @@ export const routes = [
 ];
 
 export const NavbarLinks = () => {
+  const { data: session } = useSession();
   const pathname = usePathname();
 
   return (
     <>
-      {routes.map((route) => (
-        <Link
-          href={route.href}
-          as={route.href}
-          key={route.label}
-          className={cn(
-            "flex items-center justify-center transition",
-            pathname === route.href
-              ? "font-bold text-danger"
-              : "text-white hover:text-danger/70"
-          )}
-        >
-          <div className="w-6 h-6 md:hidden">
-            <route.icon />
-          </div>
-          <span className="max-md:hidden">{route.label}</span>
-        </Link>
-      ))}
+      {routes.map((route) => {
+        const path =
+          route.href === "/profile"
+            ? `/profile/${session?.user?.name}`
+            : route.href;
+        return (
+          <Link
+            href={path}
+            as={path}
+            key={route.label}
+            className={cn(
+              "flex items-center justify-center transition",
+              unslug(pathname) === path
+                ? "font-bold text-danger"
+                : "dark:text-white hover:text-danger/70"
+            )}
+          >
+            <div className="w-6 h-6 md:hidden">
+              <route.icon />
+            </div>
+            <span className="max-md:hidden">{route.label}</span>
+          </Link>
+        );
+      })}
     </>
   );
 };

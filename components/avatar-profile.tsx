@@ -29,7 +29,12 @@ export const AvatarProfile = () => {
           <Avatar src={session?.user?.image as string} />
         </DropdownTrigger>
         <DropdownMenu aria-label="profile-dropdown">
-          <DropdownItem showDivider>{session?.user?.name}</DropdownItem>
+          <DropdownItem
+            showDivider
+            className="!data-[hover]:bg-transparent !data-[hover]:bg-none"
+          >
+            {session?.user?.name}
+          </DropdownItem>
           <DropdownItem
             startContent={<Settings className="w-4 h-4" />}
             onPress={() =>

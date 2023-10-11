@@ -8,10 +8,11 @@ import { NavbarLinks } from "./links";
 import { AvatarProfile } from "@/components/avatar-profile";
 import { useSignInContext } from "@/components/hooks/useSignIn";
 import { useSignUpContext } from "@/components/hooks/useSignUp";
+import { Notifications } from "@/components/layout/notifications";
 import { SignIn } from "@/components/sign-in";
 import { SignUp } from "@/components/sign-up";
+import Image from "next/image";
 import Link from "next/link";
-import { Notifications } from "@/components/layout/notifications";
 import { MobileSide } from "./mobile-sidebar";
 
 export const Navbar = () => {
@@ -22,8 +23,10 @@ export const Navbar = () => {
   return (
     <div className="shadow-md dark:shadow-gray-200/25">
       <div className="container flex items-center justify-between py-2">
-        <Link href="/" className="font-extrabold text-2xl">
-          Forum
+        <Link href="/">
+          <div className="w-full flex items-center">
+            <Image src="/assets/logo.png" alt="Logo" width={100} height={100} />
+          </div>
         </Link>
         {session?.user && (
           <div className="max-md:hidden flex items-center justify-center gap-3">
@@ -43,13 +46,13 @@ export const Navbar = () => {
               </div>
             </div>
           ) : (
-            <>
+            <div className="flex items-center gap-1">
               <Button
                 onClick={onOpen}
                 radius="sm"
                 variant="light"
                 color="primary"
-                className="mr-2 max-md:text-sm"
+                className="max-md:text-sm"
               >
                 Sign In
               </Button>
@@ -64,7 +67,7 @@ export const Navbar = () => {
               </Button>
               <SignIn />
               <SignUp />
-            </>
+            </div>
           )}
         </div>
       </div>

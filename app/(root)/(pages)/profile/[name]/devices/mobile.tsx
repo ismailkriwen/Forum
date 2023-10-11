@@ -17,6 +17,7 @@ import { ProfileAbout } from "../about";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
 import { UploadImageModal } from "../modals/uploadImage";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 
 export const Mobile = ({
   name,
@@ -74,7 +75,15 @@ export const Mobile = ({
             }}
           />
           <div className="text-center">
-            <div className="text-small pb-[2px]">{user?.name}</div>
+            <div className="text-small pb-[2px]">
+              {user?.name}{" "}
+              {user?.gender == "Male" && (
+                <BsGenderMale className="text-primary inline-block text-small" />
+              )}
+              {user?.gender === "Female" && (
+                <BsGenderFemale className="text-rose-500 inline-block text-small" />
+              )}
+            </div>
             <div className="text-default-500 text-small pb-[2px]">
               {user?.role}
             </div>

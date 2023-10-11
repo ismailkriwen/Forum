@@ -56,9 +56,18 @@ export const Statistics = () => {
           <>
             <div className="pb-1 font-semibold">Forum Stats</div>
             <div className="pl-2 flex items-center gap-2">
-              <span>Total topics: {info?.topics} &bull;</span>
-              <span>Total posts: {info?.posts} &bull;</span>
-              <span>Total users: {info?.users} &bull;</span>
+              <span>
+                Total topics: {info?.topics}{" "}
+                <span className="max-sm:hidden">&bull;</span>
+              </span>
+              <span>
+                Total posts: {info?.posts}{" "}
+                <span className="max-sm:hidden">&bull;</span>
+              </span>
+              <span>
+                Total users: {info?.users}{" "}
+                <span className="max-sm:hidden">&bull;</span>
+              </span>
               <span>
                 Latest user:{" "}
                 <Link

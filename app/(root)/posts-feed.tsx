@@ -18,6 +18,7 @@ import {
 import { Category, Post, Topic, User } from "@prisma/client";
 import { Check, ChevronDown, ExternalLink } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 
 type TCategory = {
   id: string;
@@ -48,39 +49,34 @@ const Skeleton = () => {
 
 export const PostsFeed = () => {
   const [filterBy, setFilterBy] = useState("latest");
-  const [categories, setCategories] = useState<TCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState<TPost[]>([]);
-  const [fetchingcategories, setFetchingCategories] = useState(false);
-  const fetcher = useCallback(async () => {
-    setFetchingCategories(true);
-    const res = await getCategories({ select: { id: true, name: true } });
-    // @ts-ignore
-    res && setCategories(res);
-    setFetchingCategories(false);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const query = { select: { id: true, name: true } };
+
+  const { data: categories, isLoading: fetchingcategories } = useQuery({
+    queryKey: ["categories", query],
+    queryFn: async () => await getCategories(query),
+    staleTime: Infinity,
+  });
 
   const fetchPosts = useCallback(async () => {
     setIsLoading(true);
-    if (filterBy == "latest") {
-      const res = await latestPosts();
-      // @ts-ignore
+    try {
+      const res =
+        filterBy === "latest"
+          ? await latestPosts()
+          : await postsByCategory(filterBy);
       res && setPosts(res);
-    } else {
-      const res = await postsByCategory(filterBy);
-      // @ts-ignore
-      res && setPosts(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [filterBy]);
 
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts]);
-
-  useEffect(() => {
-    fetcher();
-  }, [fetcher]);
+  }, [fetchPosts, filterBy]);
 
   return (
     <>
@@ -123,17 +119,25 @@ export const PostsFeed = () => {
               </DropdownItem>
             </DropdownSection>
             <DropdownSection title="Categories">
-              {categories.map((category) => (
-                <DropdownItem
-                  key={category.id}
-                  onPress={() => setFilterBy(category.name)}
-                  endContent={
-                    filterBy == category.name && <Check className="w-4 h-4" />
-                  }
-                >
-                  {category.name}
-                </DropdownItem>
-              ))}
+              {categories ? (
+                categories?.map((category: Category) => {
+                  return (
+                    <DropdownItem
+                      key={category.id}
+                      onPress={() => setFilterBy(category?.name!)}
+                      endContent={
+                        filterBy == category.name && (
+                          <Check className="w-4 h-4" />
+                        )
+                      }
+                    >
+                      {category.name}
+                    </DropdownItem>
+                  );
+                })
+              ) : (
+                <DropdownItem textValue="placeholder"></DropdownItem>
+              )}
             </DropdownSection>
           </DropdownMenu>
         </Dropdown>
@@ -148,8 +152,8 @@ export const PostsFeed = () => {
         </Button>
       </div>
       <div className="flex gap-2 flex-col">
-        {!isLoading || posts.length == 0 ? (
-          posts.map((post) => (
+        {!isLoading || posts?.length == 0 ? (
+          posts?.map((post: TPost) => (
             <div
               key={post.id}
               className="bg-neutral-100 dark:bg-neutral-900 rounded-md flex items-center justify-between px-6 py-4"
@@ -157,26 +161,26 @@ export const PostsFeed = () => {
               <div className="flex items-center gap-4">
                 <div>
                   <Avatar
-                    src={post.user.image as string}
+                    src={post.user.image!}
                     showFallback
                     radius="full"
                     size="md"
                     as={Link}
-                    href={`/profile/${post.user.name}`}
+                    href={`/profile/${post.user?.name}`}
                   />
                 </div>
-                <div className="flex flex-col w-full h-full gap-2">
+                <div className="flex flex-col w-full h-full gap-1">
                   <Link href={`/topics/${post.topic.id}`} color="foreground">
                     {post.topic.title}
                   </Link>
-                  {post.topic?.categories?.map((category) => (
+                  {post.topic?.categories?.map((category: Category) => (
                     <div className="flex items-center gap-2" key={category.id}>
                       <Chip
                         variant="bordered"
                         size="sm"
                         style={{
-                          color: category.color as string,
-                          borderColor: category.color as string,
+                          color: category.color!,
+                          borderColor: category.color!,
                         }}
                         className="text-xs"
                         key={category.id}
@@ -201,9 +205,12 @@ export const PostsFeed = () => {
             <Skeleton />
           </>
         )}
-        {posts.length === 0 && !isLoading && (
-          <div className="text-default-700 text-center">No results found.</div>
-        )}
+        {!posts ||
+          (posts?.length === 0 && !isLoading && (
+            <div className="text-default-700 text-center">
+              No results found.
+            </div>
+          ))}
       </div>
     </>
   );

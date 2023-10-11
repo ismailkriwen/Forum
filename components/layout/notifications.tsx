@@ -15,26 +15,26 @@ import {
 } from "@nextui-org/react";
 import { Notification } from "@prisma/client";
 import { Bell } from "lucide-react";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { user_date } from "@/lib/date";
 import { getPostTopicById } from "@/lib/helpers";
 import { pusherClient } from "@/lib/pusher";
 import { Session } from "next-auth";
 
-export const Notifications = ({ session }: { session: Session | null }) => {
-  const [loading, setLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+import { useMutation, useQuery } from "react-query";
 
-  const fetcher = useCallback(async () => {
-    setLoading(true);
-    const response = await getNotifications();
-    if (response && response.length > 0) {
-      setNotifications(response);
-    }
-    setLoading(false);
-  }, []);
+export const Notifications = ({ session }: { session: Session | null }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => await getNotifications(),
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: async () => await getNotifications(),
+  });
 
   const markAsRead = async () => {
     if (!isVisible) return;
@@ -43,28 +43,24 @@ export const Notifications = ({ session }: { session: Session | null }) => {
   };
 
   useEffect(() => {
-    fetcher();
-  }, [fetcher]);
-
-  useEffect(() => {
     const channel = pusherClient.subscribe(session?.user.email!);
     channel.bind("notify", () => {
-      fetcher();
+      mutate();
       setIsVisible(true);
     });
 
     return () => {
       pusherClient.unsubscribe(session?.user.email!);
     };
-  }, [fetcher, session]);
+  }, [session]);
 
   useEffect(() => {
-    if (notifications.length > 0) {
-      const s = notifications.filter((e) => !e.seen);
+    if (data) {
+      const s = data.filter((e) => !e.seen);
       if (s.length == 0) isVisible === false && setIsVisible(false);
       else setIsVisible(true);
     } else isVisible === false && setIsVisible(false);
-  }, [notifications, isVisible]);
+  }, [data, isVisible]);
 
   return (
     <>
@@ -72,7 +68,7 @@ export const Notifications = ({ session }: { session: Session | null }) => {
         <DropdownTrigger as="button">
           <div className="relative cursor-pointer flex items-center">
             <Badge
-              content={notifications?.length}
+              content={data?.length}
               isInvisible={!isVisible}
               color="danger"
             >
@@ -84,12 +80,12 @@ export const Notifications = ({ session }: { session: Session | null }) => {
           className="w-96 max-h-72 max-sm:w-full overflow-y-auto"
           aria-label="notifications"
         >
-          {loading ? (
+          {isLoading ? (
             <DropdownItem className="text-center" textValue="Loading">
               <Spinner color="default" />
             </DropdownItem>
-          ) : notifications?.length > 0 ? (
-            notifications?.map((item: Notification, idx) => (
+          ) : data && data?.length > 0 ? (
+            data?.map((item: Notification, idx) => (
               <DropdownSection key={idx}>
                 {idx === 0 ? (
                   <DropdownItem aria-label="mark as read" showDivider>
