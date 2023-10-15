@@ -20,6 +20,7 @@ import { ChevronLeft, ChevronRight, Reply } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ReplyModal } from "./reply";
+import { MiniProfile } from "@/components/mini-profile";
 
 interface IMessage extends TMessage {
   user: TUser;
@@ -131,31 +132,7 @@ export const Messages = ({
         <div className="z-0">
           {items.map((message) => (
             <div className="flex items-strech gap-2 mt-2" key={message.id}>
-              <div className="max-md:hidden text-center flex items-center justify-between gap-2 flex-col px-4 py-2 min-w-[200px] bg-neutral-100 dark:bg-neutral-950">
-                <div className={`${textColors[message.user.role]}`}>
-                  <div>{message.user.name}</div>
-                  <div className="text-small text-default-400">
-                    {message.user.role}
-                  </div>
-                </div>
-                <Avatar
-                  src={message.user.image as string}
-                  showFallback
-                  className="w-20 h-20 text-large my-2"
-                  classNames={{
-                    icon: "bg-default-900",
-                  }}
-                />
-                <Button
-                  as={Link}
-                  showAnchorIcon
-                  variant="ghost"
-                  href={`/profile/${message.user.name}`}
-                  target="_blank"
-                >
-                  Visit Profile
-                </Button>
-              </div>
+              <MiniProfile email={message.user.email!} />
               <div className="bg-neutral-100 dark:bg-neutral-950 px-6 py-2 w-full flex flex-col">
                 <div className="px-6 py-2 flex items-center justify-between text-small">
                   <div className={`md:hidden ${textColors[message.user.role]}`}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useIsMobile } from "@/components/hooks/useIsMobile";
-import { useSignInContext } from "@/components/hooks/useSignIn";
+import { MiniProfile } from "@/components/mini-profile";
 import { colors, textColors } from "@/constants";
 import {
   getPost,
@@ -20,7 +20,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Link,
   Pagination,
   Spinner,
   Tooltip,
@@ -32,7 +31,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit,
-  ExternalLink,
   Eye,
   EyeOff,
   Quote,
@@ -41,8 +39,9 @@ import {
   ThumbsUp,
   Trash,
 } from "lucide-react";
+import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { ToastContainer } from "react-toastify";
 import { Toaster, toast } from "sonner";
@@ -50,7 +49,6 @@ import { DeleteModal } from "./actions/delete";
 import { EditModal } from "./actions/edit";
 import { QuoteModal } from "./quote";
 import { ReplyModal } from "./reply";
-import { Session } from "next-auth";
 
 export type TPost = {
   user: User;
@@ -268,43 +266,7 @@ export const TopicsIdPageComponent = ({
                 }`}
                 key={post.id}
               >
-                {index % 2 === 0 && (
-                  <div
-                    key={index}
-                    className="max-md:hidden text-center flex items-center justify-between gap-2 flex-col px-4 py-2 min-w-[200px] bg-neutral-100 dark:bg-neutral-950"
-                  >
-                    <div className={`${textColors[post.user.role]}`}>
-                      <div>{post.user.name}</div>
-                      <div className="text-small text-default-400">
-                        {post.user.role}
-                      </div>
-                    </div>
-                    <Avatar
-                      src={post.user.image as string}
-                      showFallback
-                      color={
-                        colors[post.user.role] as
-                          | "primary"
-                          | "success"
-                          | "default"
-                      }
-                      isBordered
-                      className="w-20 h-20 text-large my-2"
-                      classNames={{
-                        icon: "dark:bg-default-900",
-                      }}
-                    />
-                    <Button
-                      as={Link}
-                      showAnchorIcon
-                      variant="ghost"
-                      href={`/profile/${post.user.name}`}
-                      target="_blank"
-                    >
-                      Visit Profile
-                    </Button>
-                  </div>
-                )}
+                {index % 2 === 0 && <MiniProfile email={post.user.email!} />}
                 <div
                   className="bg-neutral-100 dark:bg-neutral-950 px-6 py-2 w-full flex flex-col"
                   key={post.id}
@@ -493,45 +455,7 @@ export const TopicsIdPageComponent = ({
                     <pre className="break-words pt-2">{post.content}</pre>
                   </div>
                 </div>
-                {index % 2 !== 0 && (
-                  <div
-                    key={index}
-                    className="max-md:hidden text-center flex items-center justify-between gap-2 flex-col px-4 py-2 min-w-[200px] bg-neutral-100 dark:bg-neutral-950"
-                  >
-                    <div className={`${textColors[post.user.role]}`}>
-                      <div>{post.user.name}</div>
-                      <div className="text-small text-default-400">
-                        {post.user.role}
-                      </div>
-                    </div>
-                    <Avatar
-                      src={post.user.image as string}
-                      showFallback
-                      color={
-                        colors[post.user.role] as
-                          | "primary"
-                          | "success"
-                          | "default"
-                      }
-                      isBordered
-                      className="w-20 h-20 text-large my-2"
-                      classNames={{
-                        icon: "bg-default-900",
-                      }}
-                    />
-                    <Button
-                      as={Link}
-                      variant="ghost"
-                      href={`/profile/${post.user.name}`}
-                      target="_blank"
-                      startContent={
-                        <ExternalLink className="w-4 h-4 rotate-[270deg]" />
-                      }
-                    >
-                      Visit Profile
-                    </Button>
-                  </div>
-                )}
+                {index % 2 !== 0 && <MiniProfile email={post.user.email!} />}
               </div>
             ))}
           </div>
