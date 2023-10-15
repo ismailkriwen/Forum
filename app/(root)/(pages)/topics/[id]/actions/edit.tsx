@@ -11,7 +11,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { TPost } from "../page";
+import { TPost } from "../post";
 
 import { toast } from "react-toastify";
 

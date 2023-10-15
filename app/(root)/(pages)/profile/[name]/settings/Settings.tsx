@@ -12,16 +12,20 @@ import {
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { ToastContainer, toast } from "react-toastify";
 
 export const Settings = ({ name }: { name: string }) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
   const [gender, setGender] = useState("");
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["settings_profile"],
+    queryFn: async () => await getUser({ name }),
+  });
 
   const submit = async () => {
     setUpdating(true);
@@ -38,18 +42,6 @@ export const Settings = ({ name }: { name: string }) => {
     setUpdating(false);
   };
 
-  const fetcher = useCallback(async () => {
-    if (!name) return;
-    setLoading(true);
-    const res = await getUser({ name });
-    res && setUser(res);
-    setLoading(false);
-  }, [name]);
-
-  useEffect(() => {
-    fetcher();
-  }, [fetcher]);
-
   useEffect(() => {
     if (bio == "" || location == "" || gender == "" || !user) return;
     user.bio && setBio(user.bio);
@@ -60,7 +52,7 @@ export const Settings = ({ name }: { name: string }) => {
   return (
     <>
       <div className="rounded bg-gray-200/70 dark:bg-neutral-800/90 min-h-[200px] w-fit min-w-[300px] mt-6 container py-2">
-        {loading ? (
+        {isLoading ? (
           <div className="w-full !h-full flex items-center justify-center">
             <Spinner color="default" />
           </div>
@@ -118,16 +110,6 @@ export const Settings = ({ name }: { name: string }) => {
           </>
         )}
       </div>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        theme="dark"
-      />
     </>
   );
 };

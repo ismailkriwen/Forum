@@ -20,7 +20,7 @@ export const DeleteModal = ({
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
-  user: TUser | null;
+  user: TUser | null | undefined;
   open: () => void;
 }) => {
   const [loading, setLoading] = useState(false);

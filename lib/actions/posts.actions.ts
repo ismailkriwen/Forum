@@ -1,6 +1,6 @@
 "use server";
 
-import { TPost } from "@/app/(root)/(pages)/topics/[id]/page";
+import { TPost } from "@/app/(root)/(pages)/topics/[id]/post";
 import { prisma } from "@/lib/db";
 import { pusherServer } from "../pusher";
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
@@ -177,6 +177,9 @@ const deletePost = async (id: string) => {
 };
 
 const hidePost = async ({ id, email }: { id: string; email: string }) => {
+  const session = await getAuthSession();
+  if (!session) return;
+
   const postHidden = await prisma.post.findFirst({
     where: { id },
     select: { hidden: true },
@@ -207,6 +210,9 @@ const hidePost = async ({ id, email }: { id: string; email: string }) => {
 };
 
 const unHidePost = async ({ id, email }: { id: string; email: string }) => {
+  const session = await getAuthSession();
+  if (!session) return;
+
   const postHidden = await prisma.post.findFirst({
     where: { id },
     select: { hidden: true },

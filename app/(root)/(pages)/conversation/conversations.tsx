@@ -28,6 +28,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { NewMessage } from "./new-modal";
 import { useSession } from "next-auth/react";
 import { colors } from "@/constants";
+import { useQuery } from "react-query";
 
 interface IConversation extends TConversation {
   messages: Message[];
@@ -36,16 +37,10 @@ interface IConversation extends TConversation {
 const ROWS_PER_PAGE = 10;
 
 const UserInfo = ({ email }: { email: string }) => {
-  const [user, setUser] = useState<TUser>();
-  const getProfile = useCallback(async () => {
-    const res = await getUserByAny({ query: { where: { email } } });
-    if (!res) return;
-    setUser(res);
-  }, [email]);
-
-  useEffect(() => {
-    getProfile();
-  }, [getProfile]);
+  const { data: user } = useQuery({
+    queryKey: ["profile_by_email__conversation__userInfo"],
+    queryFn: async () => await getUserByAny({ query: { where: { email } } }),
+  });
 
   return (
     <Link href={`/profile/${user?.name}`}>

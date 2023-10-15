@@ -12,7 +12,6 @@ const HomePage = async () => {
       <div>{session && <NewPost session={session} />}</div>
       <div className="mt-4">
         <PostsFeed />
-
         <Statistics />
       </div>
     </>

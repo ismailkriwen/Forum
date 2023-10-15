@@ -15,12 +15,13 @@ import {
   Link as UILink,
   useDisclosure,
 } from "@nextui-org/react";
-import { Category, Post, Topic, User } from "@prisma/client";
+import { Category, Post, Topic } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 
 const TOPICS_PER_PAGE = 10;
 
@@ -30,16 +31,10 @@ type TTopic = {
 } & Topic;
 
 const UserInfo = ({ id }: { id: string }) => {
-  const [user, setUser] = useState<User>();
-  const getProfile = useCallback(async () => {
-    const res = await getUserByAny({ query: { where: { id } } });
-    if (!res) return;
-    setUser(res);
-  }, [id]);
-
-  useEffect(() => {
-    getProfile();
-  }, [getProfile]);
+  const { data: user } = useQuery({
+    queryKey: ["user_info__topics"],
+    queryFn: async () => await getUserByAny({ query: { where: { id } } }),
+  });
 
   return (
     <UILink href={`/profile/${user?.name}`}>

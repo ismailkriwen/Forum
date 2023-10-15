@@ -2,31 +2,18 @@
 import { textColors } from "@/constants";
 import { grabInfo } from "@/lib/actions/general.actions";
 import { Divider, Spinner } from "@nextui-org/react";
-import { Role, type User } from "@prisma/client";
+import { Role } from "@prisma/client";
 import Link from "next/link";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment } from "react";
 
-type TInfo = {
-  topics: number;
-  posts: number;
-  users: number;
-  latest: User;
-};
+import { useQuery } from "react-query";
 
 export const Statistics = () => {
   const roles = Object.keys(Role);
-  const [info, setInfo] = useState<TInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const fetcher = useCallback(async () => {
-    setIsLoading(true);
-    const res = await grabInfo();
-    res && setInfo(res as TInfo);
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetcher();
-  }, [fetcher]);
+  const { data: info, isLoading } = useQuery({
+    queryKey: ["statistics"],
+    queryFn: async () => await grabInfo(),
+  });
 
   return (
     <>

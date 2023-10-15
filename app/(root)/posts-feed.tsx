@@ -18,12 +18,7 @@ import {
 import { Category, Post, Topic, User } from "@prisma/client";
 import { Check, ChevronDown, ExternalLink } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-
-type TCategory = {
-  id: string;
-  name: string;
-};
+import { useQuery } from "react-query";
 
 type TPost = {
   user: User;
@@ -68,7 +63,7 @@ export const PostsFeed = () => {
           : await postsByCategory(filterBy);
       res && setPosts(res);
     } catch (error) {
-      console.log(error);
+      return false;
     } finally {
       setIsLoading(false);
     }

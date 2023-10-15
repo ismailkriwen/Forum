@@ -12,7 +12,7 @@ import {
 } from "@nextui-org/react";
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
-import { TPost } from "../page";
+import { TPost } from "../post";
 
 export const DeleteModal = ({
   isOpen,

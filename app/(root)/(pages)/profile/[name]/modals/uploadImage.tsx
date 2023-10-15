@@ -30,7 +30,7 @@ export const UploadImageModal = ({
   onOpenChange,
   onClose,
 }: {
-  user: User | null;
+  user: User | null | undefined;
   isOpen: boolean;
   onOpenChange: () => void;
   onClose: () => void;

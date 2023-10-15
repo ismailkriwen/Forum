@@ -80,7 +80,6 @@ const userExistance = async ({
   email: string;
   password: string;
 }) => {
-  console.log(email, password)
   const emailExists = await prisma.user.findUnique({ where: { email } });
   if (!emailExists) return { error: "No such user with this email" };
 

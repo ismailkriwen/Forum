@@ -30,7 +30,7 @@ export const EditModal = ({
   onOpen,
   onOpenChange,
 }: {
-  user: TUser | null;
+  user: TUser | null | undefined;
   editRole: boolean;
   isOpen: boolean;
   onOpen: () => void;
@@ -102,28 +102,30 @@ export const EditModal = ({
                 </div>
                 <div className="my-2">
                   {user?.email === session?.user?.email && (
-                  <><div className="text-default-600 mb-2"> Password</div>
-                  <Input
-                    label="Password"
-                    variant="bordered"
-                    radius="sm"
-                    value={password}
-                    onValueChange={setPassword}
-                    endContent={
-                      <button
-                        className="focus:outline-none"
-                        type="button"
-                        onClick={() => setIsVisible((prev) => !prev)}
-                      >
-                        {isVisible ? (
-                          <Eye className="w-4 h-4 text-default-400 pointer-events-none" />
-                        ) : (
-                          <EyeOff className="w-4 h-4 text-default-400 pointer-events-none" />
-                        )}
-                      </button>
-                    }
-                    type={isVisible ? "text" : "password"}
-                  /></>
+                    <>
+                      <div className="text-default-600 mb-2"> Password</div>
+                      <Input
+                        label="Password"
+                        variant="bordered"
+                        radius="sm"
+                        value={password}
+                        onValueChange={setPassword}
+                        endContent={
+                          <button
+                            className="focus:outline-none"
+                            type="button"
+                            onClick={() => setIsVisible((prev) => !prev)}
+                          >
+                            {isVisible ? (
+                              <Eye className="w-4 h-4 text-default-400 pointer-events-none" />
+                            ) : (
+                              <EyeOff className="w-4 h-4 text-default-400 pointer-events-none" />
+                            )}
+                          </button>
+                        }
+                        type={isVisible ? "text" : "password"}
+                      />
+                    </>
                   )}
                 </div>
                 {editRole && (

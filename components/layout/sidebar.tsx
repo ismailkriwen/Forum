@@ -18,7 +18,7 @@ export const Sidebar = () => {
   const { onOpen } = useSignOutContext();
 
   return (
-    <div className="space-y-4 py-4 flex justify-between flex-col h-full bg-blue-800/20 text-white">
+    <div className="space-y-4 py-4 flex justify-between flex-col h-full bg-slate-800/50 text-white">
       <div className="px-3 py-2 flex-1">
         <div className="space-y-1 mt-5">
           {routes.map((route) => {

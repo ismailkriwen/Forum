@@ -1,34 +1,26 @@
 import { getUser } from "@/lib/actions/user.actions";
 import { Role, type User as TUser } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
 
 import { unslug } from "@/lib/slugify";
 import { Avatar, Button, useDisclosure } from "@nextui-org/react";
-import { Camera, Settings, UserPlus } from "lucide-react";
+import { Settings, UserPlus } from "lucide-react";
 import { BiSolidMessageAdd } from "react-icons/bi";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
+import { useQuery } from "react-query";
 import { ProfileAbout } from "../about";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
 import { UploadImageModal } from "../modals/uploadImage";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 
-export const Mobile = ({
-  name,
-  setLoading,
-}: {
-  name: string;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-}) => {
+export const Mobile = ({ name }: { name: string }) => {
   const { data: session } = useSession();
-  const [user, setUser] = useState<TUser | null>(null);
   const owner = session?.user?.name === unslug(name) || false;
+
+  const { data: user } = useQuery({
+    queryKey: ["profile_info__mobile"],
+    queryFn: async () => await getUser({ name: unslug(name) }),
+  });
 
   const {
     isOpen: editIsOpen,
@@ -48,18 +40,6 @@ export const Mobile = ({
     onOpenChange: imgOnOpenChange,
     onClose: imgOnClose,
   } = useDisclosure();
-
-  const fetchUser = useCallback(async () => {
-    if (!name) return;
-    setLoading(true);
-    const res = await getUser({ name: unslug(name) });
-    if (res) setUser(res);
-    setLoading(false);
-  }, [name, setLoading]);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
 
   return (
     <>
