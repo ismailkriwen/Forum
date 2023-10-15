@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { Toaster, toast } from "sonner";
+import { toast } from "react-toastify";
 
 import {
   Form,
@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Session } from "next-auth";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { type TTopic } from "./page";
+import { type TTopic } from "./post";
 
 const formSchema = z.object({
   content: z.string().nonempty({ message: "Content can't be empty" }),
@@ -44,7 +44,7 @@ export const ReplyModal = ({
   onOpenChange: () => void;
   onClose: () => void;
   session: Session | null;
-  topic: TTopic | undefined;
+  topic: TTopic | undefined | null;
   mutate: () => void;
 }) => {
   const [creatingPost, setCreatingPost] = useState(false);
@@ -55,16 +55,19 @@ export const ReplyModal = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { content } = values;
-    if (!session?.user?.email) return toast.error("Not authenticated");
+    if (!session?.user?.email)
+      return toast.error("Not authenticated", { position: "bottom-right" });
     setCreatingPost(true);
-    if (!topic) toast.error("Something went wrong.");
+    if (!topic)
+      toast.error("Something went wrong.", { position: "bottom-right" });
     const post = await createPost({
-      topicId: topic?.id as string,
+      topicId: topic?.id!,
       content,
       creator: session?.user?.email,
     });
-    if (!post) toast.error("Something went wrong.");
-    toast.success("Post created successfully.");
+    if (!post)
+      toast.error("Something went wrong.", { position: "bottom-right" });
+    toast.success("Post created successfully.", { position: "bottom-right" });
     mutate();
     onClose();
     form.resetField("content");
@@ -74,7 +77,6 @@ export const ReplyModal = ({
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Toaster position="bottom-right" richColors expand={true} />
         <ModalContent>
           {(onclose) => (
             <>

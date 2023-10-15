@@ -43,7 +43,7 @@ import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { Toaster, toast } from "sonner";
+import { toast } from "react-toastify";
 import { DeleteModal } from "./actions/delete";
 import { EditModal } from "./actions/edit";
 import { QuoteModal } from "./quote";
@@ -117,7 +117,6 @@ export const TopicsIdPageComponent = ({
   const { id } = params;
   const isMobile = useIsMobile();
   const router = useRouter();
-  // const [topic, setTopic] = useState<TTopic>();
   const [switchingPages, setSwitchingPages] = useState(false);
   const [selectedPost, setSelectedPost] = useState<TPost>();
   const page = Number(searchParams.page);
@@ -192,7 +191,6 @@ export const TopicsIdPageComponent = ({
       {session?.user ? (
         <>
           <div className="my-4">
-            <Toaster position="bottom-right" richColors expand={true} />
             <div className="bg-neutral-200 dark:bg-neutral-900 flex items-center justify-between px-8 py-2 mt-2">
               <div>{topic?.title}</div>
               <Button
