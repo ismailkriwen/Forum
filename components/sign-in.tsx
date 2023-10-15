@@ -22,7 +22,7 @@ import z from "zod";
 import { useSignInContext } from "@/components/hooks/useSignIn";
 import { useRouter } from "next/navigation";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email type" }),
@@ -202,16 +202,6 @@ export const SignIn = () => {
           </>
         </ModalContent>
       </Modal>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        theme="dark"
-      />
     </>
   );
 };

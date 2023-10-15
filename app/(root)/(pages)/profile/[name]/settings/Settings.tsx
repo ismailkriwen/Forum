@@ -9,11 +9,10 @@ import {
   Spinner,
   Textarea,
 } from "@nextui-org/react";
-import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export const Settings = ({ name }: { name: string }) => {
   const router = useRouter();

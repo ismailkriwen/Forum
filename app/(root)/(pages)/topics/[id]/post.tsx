@@ -43,7 +43,6 @@ import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { ToastContainer } from "react-toastify";
 import { Toaster, toast } from "sonner";
 import { DeleteModal } from "./actions/delete";
 import { EditModal } from "./actions/edit";
@@ -459,18 +458,6 @@ export const TopicsIdPageComponent = ({
               </div>
             ))}
           </div>
-          <ToastContainer
-            position="bottom-right"
-            autoClose={2000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-          />
           <ReplyModal
             isOpen={isOpen}
             onOpenChange={onOpenChange}

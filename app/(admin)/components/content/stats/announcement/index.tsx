@@ -6,8 +6,7 @@ import {
 } from "@/lib/actions/general.actions";
 import { Button, Spinner, Switch, Textarea } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 export const Announcement = () => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -82,17 +81,6 @@ export const Announcement = () => {
           </>
         )}
       </div>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        pauseOnHover={false}
-        theme="dark"
-      />
     </>
   );
 };

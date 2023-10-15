@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Announcement } from "./Announcement";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: {
@@ -32,6 +33,16 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           </main>
           <ThemeController />
         </ProvidersContainer>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          draggable
+          theme="dark"
+        />
       </body>
     </html>
   );

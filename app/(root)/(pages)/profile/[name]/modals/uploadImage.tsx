@@ -17,7 +17,7 @@ import {
 import { User } from "@prisma/client";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -150,16 +150,6 @@ export const UploadImageModal = ({
           )}
         </ModalContent>
       </Modal>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        theme="dark"
-      />
     </>
   );
 };

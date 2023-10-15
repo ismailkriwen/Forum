@@ -4,7 +4,9 @@ import { Sidebar } from "@/app/(admin)/components/sidebar";
 import { ProvidersContainer } from "@/components/providers/main";
 import { ThemeController } from "@/components/theme";
 import { SITE_NAME } from "@/constants";
+import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata = {
   title: `${SITE_NAME} | Admin`,
@@ -32,6 +34,17 @@ export default function RootLayout({
           </main>
           <ThemeController />
         </ProvidersContainer>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          draggable
+          pauseOnHover={false}
+          theme="dark"
+        />
       </body>
     </html>
   );
