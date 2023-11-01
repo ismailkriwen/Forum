@@ -116,7 +116,10 @@ export const SearchComponent = () => {
                       </span>
                       <div className="w-full">
                         {results[0].map((user: User) => (
-                          <div className="flex items-start gap-2 px-6 py-1.5 rounded-md hover:bg-neutral-300/60 dark:hover:bg-neutral-600/70 transition-colors max-h-36 overflow-y-auto">
+                          <div
+                            key={user.id}
+                            className="flex items-start gap-2 px-6 py-1.5 rounded-md hover:bg-neutral-300/60 dark:hover:bg-neutral-600/70 transition-colors max-h-36 overflow-y-auto"
+                          >
                             {user?.image ? (
                               <Image
                                 src={user?.image}
@@ -160,7 +163,7 @@ export const SearchComponent = () => {
                       </span>
                       <div className="space-y-1 pl-6 max-h-36 overflow-y-auto">
                         {results[1].map((topic: Topic) => (
-                          <div>
+                          <div key={topic.id}>
                             <Link href={`/topic/${topic.id}`}>
                               {topic.title}
                             </Link>

@@ -134,7 +134,7 @@ const SignInForm = ({
             className="pb-2 text-small text-blue-500 cursor-pointer hover:opacity-80 transition-colors"
             onClick={() => setTab("register")}
           >
-            Don't have an account?
+            Don&apos;t have an account?
           </div>
           <Button
             className="w-full mt-2"

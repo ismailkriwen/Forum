@@ -70,7 +70,7 @@ export const FollowingsModal = ({ name, isOpen, onOpenChange }: Props) => {
           ) : (
             <div className="space-y-2">
               {data?.map((item) => (
-                <UserInfo email={item} />
+                <UserInfo email={item} key={item} />
               ))}
             </div>
           )}
