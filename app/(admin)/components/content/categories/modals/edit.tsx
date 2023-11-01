@@ -166,7 +166,7 @@ export const EditModal = ({
                         {Object.keys(Role).map((role, i) => (
                           <Switch
                             key={i}
-                            defaultSelected={ranks.includes(role as Role)}
+                            defaultSelected={ranks?.includes(role as Role)}
                             onChange={({ target }) => {
                               const arr = target.checked
                                 ? [...ranks, role]
