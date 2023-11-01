@@ -11,8 +11,6 @@ import { Fragment, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
-// TODO: infinite scrolling
-
 const Post = ({ id, post }: { id: string; post: string | null }) => {
   const [title, setTitle] = useState("");
   const fetcher = async () => {
@@ -62,7 +60,7 @@ export const NotificationsComponent = () => {
         <div className="text-center text-default-500">No notifications.</div>
       ) : (
         <>
-          <div className="pb-2 flex items-center justify-end space-y-2">
+          <div className="pb-2 flex items-center justify-end">
             <Button
               radius="sm"
               variant="ghost"
@@ -73,50 +71,11 @@ export const NotificationsComponent = () => {
               Mark all as Read
             </Button>
           </div>
-          {data?.map((notification) => (
-            <div
-              key={notification.id}
-              className="flex notifications-center justify-center flex-col gap-1"
-            >
-              <div>
-                {notification.type === "quote" ? (
-                  <Fragment key={notification.id}>
-                    <div>
-                      <Link
-                        href={`/profile/${notification.from}`}
-                        underline="hover"
-                        color="secondary"
-                      >
-                        {notification.from}
-                      </Link>{" "}
-                      Quoted you in{" "}
-                      <Post id={notification.id} post={notification.post} />
-                    </div>
-                    <div className="italic text-xs text-default-400 pt-1">
-                      {user_date(notification.createdAt).time} at{" "}
-                      {user_date(notification.createdAt).time}
-                    </div>
-                  </Fragment>
-                ) : notification.type === "liked" ? (
-                  <Fragment key={notification.id}>
-                    <div>
-                      <Link
-                        href={`/profile/${notification.from}`}
-                        underline="hover"
-                        color="secondary"
-                      >
-                        {notification.from}
-                      </Link>{" "}
-                      Liked your post in{" "}
-                      <Post id={notification.id} post={notification.post} />
-                    </div>
-                    <div className="italic text-xs text-default-400 pt-1">
-                      {user_date(notification.createdAt).time} at{" "}
-                      {user_date(notification.createdAt).time}
-                    </div>
-                  </Fragment>
-                ) : (
-                  notification.type == "follow" && (
+          <div className="space-y-3">
+            {data?.map((notification) => (
+              <div key={notification.id} className="flex flex-col gap-1">
+                <div>
+                  {notification.type === "quote" ? (
                     <Fragment key={notification.id}>
                       <div>
                         <Link
@@ -126,18 +85,56 @@ export const NotificationsComponent = () => {
                         >
                           {notification.from}
                         </Link>{" "}
-                        Followed you
+                        Quoted you in{" "}
+                        <Post id={notification.id} post={notification.post} />
                       </div>
                       <div className="italic text-xs text-default-400 pt-1">
                         {user_date(notification.createdAt).time} at{" "}
                         {user_date(notification.createdAt).time}
                       </div>
                     </Fragment>
-                  )
-                )}
+                  ) : notification.type === "liked" ? (
+                    <Fragment key={notification.id}>
+                      <div>
+                        <Link
+                          href={`/profile/${notification.from}`}
+                          underline="hover"
+                          color="secondary"
+                        >
+                          {notification.from}
+                        </Link>{" "}
+                        Liked your post in{" "}
+                        <Post id={notification.id} post={notification.post} />
+                      </div>
+                      <div className="italic text-xs text-default-400 pt-1">
+                        {user_date(notification.createdAt).time} at{" "}
+                        {user_date(notification.createdAt).time}
+                      </div>
+                    </Fragment>
+                  ) : (
+                    notification.type == "follow" && (
+                      <Fragment key={notification.id}>
+                        <div>
+                          <Link
+                            href={`/profile/${notification.from}`}
+                            underline="hover"
+                            color="secondary"
+                          >
+                            {notification.from}
+                          </Link>{" "}
+                          Followed you
+                        </div>
+                        <div className="italic text-xs text-default-400 pt-1">
+                          {user_date(notification.createdAt).time} at{" "}
+                          {user_date(notification.createdAt).time}
+                        </div>
+                      </Fragment>
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </>
       )}
     </div>
