@@ -93,7 +93,7 @@ export const UploadImageModal = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} radius="sm">
         <ModalContent>
           {(onclose) => (
             <>
@@ -107,7 +107,7 @@ export const UploadImageModal = ({
                       control={form.control}
                       name="profile_photo"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="px-2">
                           <div className="flex items-center justify-center">
                             <div className="w-fit">
                               <Avatar

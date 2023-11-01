@@ -20,6 +20,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Link,
   Pagination,
   Spinner,
   Tooltip,
@@ -54,9 +55,11 @@ export type TPost = {
   likes: Like[];
 } & Post;
 
-export type TTopic = {
-  posts: TPost[];
-} & Topic;
+export type TTopic =
+  | ({
+      posts: TPost[];
+    } & Topic)
+  | null;
 
 const POSTS_PER_PAGE = 10;
 
@@ -90,9 +93,12 @@ const QuotePost = ({ id }: { id: string }) => {
                 }}
               />
               {/* @ts-ignore */}
-              <div className={`${textColors[post?.user.role as string]}`}>
+              <Link
+                className={`${textColors[post?.user.role!]}`}
+                href={`/profile/${post?.user.name}`}
+              >
                 {post?.user.name}
-              </div>
+              </Link>
             </div>
             <div className="italic max-md:hidden">{`${
               user_date(post?.createdAt as Date).date
@@ -197,6 +203,7 @@ export const TopicsIdPageComponent = ({
                 startContent={<Reply className="w-4 h-4" />}
                 variant="light"
                 size="sm"
+                radius="full"
                 onPress={onOpen}
               >
                 Reply
@@ -255,7 +262,7 @@ export const TopicsIdPageComponent = ({
               </Button>
             </div>
           </div>
-          <div className="z-0 overflow-y-auto">
+          <div className="z-0 overflow-y-auto pb-20">
             {items?.map((post, index) => (
               <div
                 className={`flex items-strech gap-2 mt-2 ${
@@ -358,6 +365,7 @@ export const TopicsIdPageComponent = ({
                           size="sm"
                           placement="bottom-end"
                           aria-label="edit-post"
+                          showArrow
                         >
                           <DropdownTrigger>
                             <Button

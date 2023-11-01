@@ -9,6 +9,11 @@ html,
 body {
   height: 100%;
   font-family: "Poppins", sans-serif;
+  background-image: url("/background.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-attachment: fixed;
+  background-position: right;
 }
 
 ::-webkit-scrollbar-track {

@@ -1,6 +1,8 @@
 "use client";
 import { colors } from "@/constants";
 import {
+  updateGender,
+  updateLocation,
   updateName,
   updatePassword,
   updateRole,
@@ -22,6 +24,7 @@ import { Edit, Eye, EyeOff, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { DeleteModal } from "./delete";
+import { toast } from "react-toastify";
 
 export const EditModal = ({
   user,
@@ -39,10 +42,11 @@ export const EditModal = ({
   const { data: session } = useSession();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [inputName, setInputName] = useState(user?.name || "");
-  const [role, setRole] = useState<Role>(user?.role as Role);
+  const [inputName, setInputName] = useState("");
+  const [role, setRole] = useState<Role>();
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [gender, setGender] = useState("");
+  const [location, setLocation] = useState("");
   const {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
@@ -50,31 +54,61 @@ export const EditModal = ({
   } = useDisclosure();
 
   const save = async (close: () => void) => {
-    setIsLoading(true);
-    if (inputName !== "" && inputName !== user?.name) {
-      const res = await updateName({
-        email: user?.email as string,
-        name: inputName,
-      });
-      if (res?.error) setError(res.error);
-    }
-    if (role && role !== user?.role)
-      await updateRole({ email: user?.email as string, role });
-    if (password !== "") {
-      if (password.length < 3)
-        return setError("Password must be longer than 3 characters");
-      else await updatePassword({ email: user?.email as string, password });
-    }
-    if (error === "") {
+    try {
+      setIsLoading(true);
+      if (inputName !== "" && inputName !== user?.name) {
+        const res = await updateName({
+          email: user?.email!,
+          name: inputName,
+        });
+        if (res?.error) toast.error(res.error);
+      }
+      if (role && role !== user?.role)
+        await updateRole({ email: user?.email!, role });
+      if (password !== "") {
+        if (password.length < 3)
+          return toast.error("Password must be longer than 3 characters");
+        else await updatePassword({ email: user?.email as string, password });
+      }
+    } finally {
+      setIsLoading(false);
       close();
-      setPassword("");
     }
-    setIsLoading(false);
+  };
+
+  const saveGender = async (close: () => void) => {
+    if (gender == user?.gender) return;
+    try {
+      setIsLoading(true);
+      const res = await updateGender({ email: user?.email!, gender });
+      if (!res) toast.error("Something went wrong.");
+      else toast.info("Updated");
+    } finally {
+      setIsLoading(false);
+      close();
+    }
+  };
+
+  const saveLocation = async (close: () => void) => {
+    if (location == user?.location) return;
+    try {
+      setIsLoading(true);
+      const res = await updateLocation({ email: user?.email!, location });
+      if (!res) toast.error("Something went wrong.");
+      else toast.info("Updated");
+    } finally {
+      setIsLoading(false);
+      close();
+    }
   };
 
   useEffect(() => {
-    setError("");
-  }, [inputName, password, role]);
+    if (!isOpen) return;
+    setInputName(user?.name!);
+    setRole(user?.role as Role);
+    setGender(user?.gender!);
+    setLocation(user?.location!);
+  }, [isOpen]);
 
   return (
     <>
@@ -91,42 +125,88 @@ export const EditModal = ({
               </ModalHeader>
               <ModalBody>
                 <div>
-                  <div className="text-default-600 mb-2">Username</div>
                   <Input
-                    variant="bordered"
+                    variant="underlined"
+                    placeholder={user?.name!}
+                    labelPlacement="outside"
                     radius="sm"
+                    size="sm"
                     value={inputName}
                     onValueChange={setInputName}
                     autoFocus={true}
                   />
                 </div>
-                <div className="my-2">
-                  {user?.email === session?.user?.email && (
-                    <>
-                      <div className="text-default-600 mb-2"> Password</div>
-                      <Input
-                        label="Password"
-                        variant="bordered"
-                        radius="sm"
-                        value={password}
-                        onValueChange={setPassword}
-                        endContent={
-                          <button
-                            className="focus:outline-none"
-                            type="button"
-                            onClick={() => setIsVisible((prev) => !prev)}
-                          >
-                            {isVisible ? (
-                              <Eye className="w-4 h-4 text-default-400 pointer-events-none" />
-                            ) : (
-                              <EyeOff className="w-4 h-4 text-default-400 pointer-events-none" />
-                            )}
-                          </button>
-                        }
-                        type={isVisible ? "text" : "password"}
-                      />
-                    </>
-                  )}
+                {user?.email === session?.user?.email && (
+                  <div className="my-2">
+                    <Input
+                      label="Password"
+                      variant="underlined"
+                      size="sm"
+                      radius="sm"
+                      value={password}
+                      onValueChange={setPassword}
+                      endContent={
+                        <button
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={() => setIsVisible((prev) => !prev)}
+                        >
+                          {isVisible ? (
+                            <Eye className="w-4 h-4 text-default-400 pointer-events-none" />
+                          ) : (
+                            <EyeOff className="w-4 h-4 text-default-400 pointer-events-none" />
+                          )}
+                        </button>
+                      }
+                      type={isVisible ? "text" : "password"}
+                    />
+                  </div>
+                )}
+                <div className="flex items-center justify-between w-full gap-5">
+                  <Select
+                    defaultSelectedKeys={[user?.gender!]}
+                    disallowEmptySelection
+                    onChange={({ target }) => setGender(target.value)}
+                    size="sm"
+                    radius="sm"
+                    labelPlacement="outside"
+                  >
+                    <SelectItem key="Male">Male</SelectItem>
+                    <SelectItem key="Female">Female</SelectItem>
+                  </Select>
+                  <Button
+                    variant="ghost"
+                    color="primary"
+                    radius="sm"
+                    size="sm"
+                    onPress={() => saveGender(onClose)}
+                    isDisabled={gender == user?.gender}
+                    isLoading={isLoading}
+                  >
+                    Save
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between w-full gap-5">
+                  <Input
+                    type="text"
+                    placeholder="Location"
+                    variant="underlined"
+                    size="sm"
+                    value={location}
+                    onChange={({ target }) => setLocation(target.value)}
+                    labelPlacement="outside"
+                  />
+                  <Button
+                    variant="ghost"
+                    color="primary"
+                    radius="sm"
+                    size="sm"
+                    onPress={() => saveLocation(onClose)}
+                    isDisabled={location == "" || location == user?.location}
+                    isLoading={isLoading}
+                  >
+                    Save
+                  </Button>
                 </div>
                 {editRole && (
                   <div className="flex items-center justify-between gap-2 my-2">
@@ -168,11 +248,6 @@ export const EditModal = ({
                     Delete
                   </Button>
                 </div>
-                {error && (
-                  <div className="my-2 text-center font-semibold text-red-500 dark:text-rose-600">
-                    {error}
-                  </div>
-                )}
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose} radius="sm">

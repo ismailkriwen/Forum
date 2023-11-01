@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { AiFillWarning } from "react-icons/ai";
 import { IUser } from "../users";
+import { toast } from "react-toastify";
 
 export const DeleteModal = ({
   isOpen,
@@ -28,9 +29,10 @@ export const DeleteModal = ({
   const deleteAction = async (close: () => void) => {
     if (!user?.name || !user?.email) return;
     setLoading(true);
-    await deleteUser({ name: user?.name, email: user?.email });
+    const res = await deleteUser({ name: user?.name, email: user?.email });
     close();
     mutate();
+    if (res) toast.info(`Deleted user: ${user?.name}`);
     setLoading(false);
   };
 
@@ -41,7 +43,7 @@ export const DeleteModal = ({
         onOpenChange={onOpenChange}
         classNames={{
           body: "py-6",
-          backdrop: "bg-red-500/20 backdrop-opacity-40",
+          backdrop: "bg-red-500/10 backdrop-opacity-20",
         }}
       >
         <ModalContent>
@@ -61,11 +63,13 @@ export const DeleteModal = ({
                 restore it anymore.
               </ModalBody>
               <ModalFooter>
-                <Button variant="ghost" onPress={onClose}>
+                <Button variant="light" radius="sm" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
                   color="danger"
+                  radius="sm"
+                  variant="ghost"
                   isLoading={loading}
                   onPress={() => deleteAction(onClose)}
                 >

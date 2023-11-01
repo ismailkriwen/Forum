@@ -1,7 +1,7 @@
 "use client";
 
 import { Role } from "@prisma/client";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Moon, Settings, Sun } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FaUserCog } from "react-icons/fa";
 
@@ -12,21 +12,45 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Switch,
 } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "./sign-out";
+import { useTheme } from "next-themes";
+import { useIsMobile } from "@/components/hooks/useIsMobile";
 
-export const AvatarProfile = () => {
+type Props = {
+  placement:
+    | "top-start"
+    | "top"
+    | "top-end"
+    | "bottom-start"
+    | "bottom"
+    | "bottom-end"
+    | "left-start"
+    | "left"
+    | "left-end"
+    | "right-start"
+    | "right"
+    | "right-end";
+};
+
+export const AvatarProfile = ({ placement }: Props) => {
   const router = useRouter();
   const { data: session } = useSession();
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const { onOpen } = useSignOutContext();
+  const isMobile = useIsMobile();
 
   return (
     <>
-      <Dropdown placement="bottom-end" radius="sm">
+      <Dropdown placement={placement} radius="sm" size={isMobile ? "sm" : "md"}>
         <DropdownTrigger className="cursor-pointer">
-          <Avatar src={session?.user?.image as string} />
+          <Avatar
+            src={session?.user?.image as string}
+            size={isMobile ? "sm" : "md"}
+          />
         </DropdownTrigger>
         <DropdownMenu aria-label="profile-dropdown">
           <DropdownItem
@@ -35,26 +59,8 @@ export const AvatarProfile = () => {
           >
             {session?.user?.name}
           </DropdownItem>
-          <DropdownItem
-            startContent={<Settings className="w-4 h-4" />}
-            onPress={() =>
-              router.push(`/profile/${session?.user?.name}/settings`)
-            }
-          >
-            Settings
-          </DropdownItem>
-          <DropdownItem
-            key="sign-out"
-            showDivider={
-              !pathname.includes("/admin") && session?.user?.role === Role.Admin
-            }
-            startContent={<LogOut className="w-4 h-4" />}
-            onPress={onOpen}
-          >
-            Sign out
-          </DropdownItem>
           {!pathname.includes("/admin") &&
-          session?.user?.role === Role.Admin ? (
+          session?.user?.groups.includes(Role.Admin) ? (
             <DropdownItem
               startContent={<FaUserCog className="w-4 h-4" />}
               onPress={() => router.push("/admin")}
@@ -64,6 +70,28 @@ export const AvatarProfile = () => {
           ) : (
             <DropdownItem className="w-0 p-0 hover:bg-transparent"></DropdownItem>
           )}
+          <DropdownItem isReadOnly showDivider>
+            <div className="flex items-center justify-between">
+              <div>Dark Mode</div>
+              <Switch
+                defaultSelected
+                size="sm"
+                isSelected={theme === "light"}
+                onValueChange={() =>
+                  theme === "light" ? setTheme("dark") : setTheme("light")
+                }
+                startContent={<Sun className="w-4 h-4" />}
+                endContent={<Moon className="w-4 h-4" />}
+              />
+            </div>
+          </DropdownItem>
+          <DropdownItem
+            key="sign-out"
+            startContent={<LogOut className="w-4 h-4" />}
+            onPress={onOpen}
+          >
+            Sign out
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <SignOut />

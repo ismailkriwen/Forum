@@ -26,7 +26,6 @@ import { useMutation, useQuery } from "react-query";
 
 export const Notifications = ({ session }: { session: Session | null }) => {
   const [isVisible, setIsVisible] = useState(false);
-
   const { data, isLoading } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => await getNotifications(),
@@ -88,8 +87,17 @@ export const Notifications = ({ session }: { session: Session | null }) => {
             data?.map((item: Notification, idx) => (
               <DropdownSection key={idx}>
                 {idx === 0 ? (
-                  <DropdownItem aria-label="mark as read" showDivider>
-                    <Button variant="bordered" size="sm" onPress={markAsRead}>
+                  <DropdownItem
+                    aria-label="mark as read"
+                    showDivider
+                    className="data-[hover]:bg-transparent"
+                  >
+                    <Button
+                      variant="ghost"
+                      radius="sm"
+                      size="sm"
+                      onPress={markAsRead}
+                    >
                       Mark as Read
                     </Button>
                   </DropdownItem>
@@ -97,10 +105,11 @@ export const Notifications = ({ session }: { session: Session | null }) => {
                   <DropdownItem
                     textValue="nothing"
                     aria-label="empty"
+                    className="data-[hover]:bg-transparent p-0 h-0 m-0"
                   ></DropdownItem>
                 )}
                 <DropdownItem isReadOnly key={item.id} textValue="placeholder">
-                  {item.type == "quote" ? (
+                  {item.type === "quote" ? (
                     <Fragment key={item.id}>
                       <div>
                         <Link
@@ -124,7 +133,7 @@ export const Notifications = ({ session }: { session: Session | null }) => {
                         {user_date(item.createdAt).time}
                       </div>
                     </Fragment>
-                  ) : (
+                  ) : item.type === "liked" ? (
                     <Fragment key={item.id}>
                       <div>
                         <Link
@@ -141,6 +150,30 @@ export const Notifications = ({ session }: { session: Session | null }) => {
                           underline="hover"
                         >
                           post
+                        </Link>
+                      </div>
+                      <div className="italic text-xs text-default-400 pt-1">
+                        {user_date(item.createdAt).time} at{" "}
+                        {user_date(item.createdAt).time}
+                      </div>
+                    </Fragment>
+                  ) : (
+                    <Fragment key={item.id}>
+                      <div>
+                        <Link
+                          href={`/profile/${item.from}`}
+                          underline="hover"
+                          color="secondary"
+                        >
+                          {item.from}
+                        </Link>{" "}
+                        Posted in{" "}
+                        <Link
+                          href={`/topics/${item.post}`}
+                          color="secondary"
+                          underline="hover"
+                        >
+                          {getPostTopicById(item.post!)}
                         </Link>
                       </div>
                       <div className="italic text-xs text-default-400 pt-1">

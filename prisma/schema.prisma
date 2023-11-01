@@ -11,7 +11,7 @@ enum Role {
   Admin
   Moderator
   Member
-  Friend
+  Hacker
 }
 
 model Account {
@@ -42,18 +42,17 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  username      String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  bio           String?
-  location      String?
-  gender        String?
-  password      String?
-  role          Role      @default(Member)
-  online        Boolean   @default(false)
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String?
+  email    String? @unique
+  image    String?
+  bio      String?
+  location String?
+  gender   String?
+  password String?
+  role     Role    @default(Member)
+  groups   Role[]  @default([Member])
+  private  Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,34 +64,27 @@ model User {
   logs          Logs[]
   messages      Message[]
   notifications Notification[]
-}
-
-model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+  followings    String[]
+  followers     String[]
 }
 
 model Category {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String? @unique
-  color    String? @default("#000")
-  password String?
-  private  Boolean @default(false)
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String? @unique
+  description String?
+  color       String? @default("#000")
+  ranks       Role[]  @default([Member])
+  order       Int     @default(1)
 
-  topicsIds String[] @db.ObjectId
-  topics    Topic[]  @relation(fields: [topicsIds], references: [id])
+  topics Topic[]
 }
 
 model Topic {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
 
-  categoriesIds String[]   @db.ObjectId
-  categories    Category[] @relation(fields: [categoriesIds], references: [id])
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
 
   posts Post[]
 

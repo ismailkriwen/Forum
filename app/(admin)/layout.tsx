@@ -1,8 +1,7 @@
 import { Navbar } from "@/app/(admin)/components/navbar";
 import { AdminProviders } from "@/app/(admin)/components/providers";
 import { Sidebar } from "@/app/(admin)/components/sidebar";
-import { ProvidersContainer } from "@/components/providers/main";
-import { ThemeController } from "@/components/theme";
+import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/constants";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
@@ -22,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ProvidersContainer>
+        <Providers>
           <main className="w-full h-full flex flex-row justify-start">
             <AdminProviders>
               <Sidebar />
@@ -32,8 +31,7 @@ export default function RootLayout({
               </section>
             </AdminProviders>
           </main>
-          <ThemeController />
-        </ProvidersContainer>
+        </Providers>
         <ToastContainer
           position="bottom-right"
           autoClose={2000}

@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,7 +12,7 @@ import {
 } from "@nextui-org/react";
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 
 import {
   Form,
@@ -21,81 +22,86 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { replyToPost } from "@/lib/actions/posts.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { TPost, type TTopic } from "./post";
+import { CreateTopic } from "@/lib/actions/topics.actions";
+import { toast } from "react-toastify";
+import { notifyFollowers } from "@/lib/actions/notifications";
 
 const formSchema = z.object({
+  title: z.string().nonempty({ message: "Subject can't be empty" }),
   content: z.string().nonempty({ message: "Content can't be empty" }),
 });
 
-export const QuoteModal = ({
+export const NewPostModal = ({
   isOpen,
   onOpenChange,
-  onClose,
-  mutate,
   session,
-  topic,
-  post: quotedPost,
+  cat,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
-  onClose: () => void;
-  mutate: () => void;
   session: Session | null;
-  topic: TTopic | undefined;
-  post: TPost;
+  cat: string;
 }) => {
-  const [creatingPost, setCreatingPost] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const { content } = values;
-    if (!session?.user?.email) return toast.error("Not authenticated");
-    setCreatingPost(true);
-    if (!topic) toast.error("Something went wrong.");
-    const post = await replyToPost({
-      topicId: topic?.id as string,
-      content,
-      creator: session?.user?.email,
-      postId: quotedPost?.id as string,
-    });
-    if (!post) toast.error("Something went wrong.");
-    toast.success("Post created successfully.");
-    mutate();
-    onClose();
-    form.resetField("content");
-    setCreatingPost(false);
+    const { title, content } = values;
+    try {
+      setIsLoading(true);
+      const post = await CreateTopic({ title, content, cat });
+      if (!post) toast.error("Something went wrong.");
+      else {
+        toast.info("Redirecting to post");
+        router.push(`/topics/${post.topicId}`);
+        await notifyFollowers({ post });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
+      <Toaster position="top-center" expand={false} richColors />
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Toaster position="bottom-right" richColors expand={true} />
         <ModalContent>
           {(onclose) => (
             <>
-              <ModalHeader>
-                <div>
-                  Reply to{" "}
-                  <span className="text-default-400">
-                    {quotedPost.user.name}
-                  </span>
-                </div>
-              </ModalHeader>
+              <ModalHeader>Create new post</ModalHeader>
               <Form {...form}>
                 <form
                   className="space-y-4"
                   onSubmit={form.handleSubmit(onSubmit)}
                 >
                   <ModalBody>
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel />
+                          <FormControl>
+                            <Input
+                              variant="bordered"
+                              radius="sm"
+                              label="Subject"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="content"
@@ -107,7 +113,6 @@ export const QuoteModal = ({
                               variant="bordered"
                               radius="sm"
                               label="Content"
-                              autoFocus
                               {...field}
                             />
                           </FormControl>
@@ -120,17 +125,14 @@ export const QuoteModal = ({
                     <Button type="button" onPress={onclose} variant="light">
                       Close
                     </Button>
-
                     <Button
                       variant="ghost"
-                      color="success"
-                      startContent={
-                        !creatingPost && <Send className="w-4 h-4" />
-                      }
+                      color="secondary"
+                      startContent={!isLoading && <Send className="w-4 h-4" />}
                       type="submit"
-                      isLoading={creatingPost}
+                      isLoading={isLoading}
                     >
-                      Create
+                      {isLoading ? "Creating" : "Create"}
                     </Button>
                   </ModalFooter>
                 </form>

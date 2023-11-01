@@ -27,6 +27,7 @@ import { Session } from "next-auth";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { type TTopic } from "./post";
+import { notifyFollowers } from "@/lib/actions/notifications";
 
 const formSchema = z.object({
   content: z.string().nonempty({ message: "Content can't be empty" }),
@@ -67,7 +68,10 @@ export const ReplyModal = ({
     });
     if (!post)
       toast.error("Something went wrong.", { position: "bottom-right" });
-    toast.success("Post created successfully.", { position: "bottom-right" });
+    else {
+      await notifyFollowers({ post });
+      toast.success("Post created successfully.", { position: "bottom-right" });
+    }
     mutate();
     onClose();
     form.resetField("content");

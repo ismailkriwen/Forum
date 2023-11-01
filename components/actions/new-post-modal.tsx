@@ -33,6 +33,7 @@ import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { useQuery } from "react-query";
 
 const formSchema = z.object({
   title: z.string().nonempty({ message: "Subject can't be empty" }),
@@ -52,19 +53,14 @@ export const NewPostModal = ({
 }) => {
   const route = useRouter();
   const [creatingPost, setCreatingPost] = useState(false);
-  const [fetchingCats, setFetchingCats] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [categorySelected, setCategorySelected] = useState<Category | null>(
     null
   );
 
-  const fetchCats = useCallback(async () => {
-    setFetchingCats(true);
-    const res = await getCategories();
-    res && setCategories(res);
-    setCategorySelected(res[0]);
-    setFetchingCats(false);
-  }, []);
+  const { data: categories, isLoading: fetchingCats } = useQuery({
+    queryKey: ["fetch_categories"],
+    queryFn: async () => await getCategories(),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,11 +84,6 @@ export const NewPostModal = ({
     setCreatingPost(false);
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-    fetchCats();
-  }, [isOpen, fetchCats]);
-
   return (
     <>
       <Toaster position="top-center" expand={false} richColors />
@@ -113,6 +104,7 @@ export const NewPostModal = ({
                       ) : (
                         <Select
                           defaultSelectedKeys={[categories[0]?.name || ""]}
+                          disallowEmptySelection
                           labelPlacement="outside"
                           radius="sm"
                           aria-label="category-selection"
@@ -124,14 +116,27 @@ export const NewPostModal = ({
                             )
                           }
                         >
-                          {categories?.map((category) => (
-                            <SelectItem
-                              key={category?.name as string}
-                              value={category?.name as string}
-                            >
-                              {category?.name}
-                            </SelectItem>
-                          ))}
+                          {categories?.map((category) =>
+                            category.ranks.length > 0 ? (
+                              category.ranks.some((e) =>
+                                session?.user?.groups.includes(e)
+                              ) && (
+                                <SelectItem
+                                  key={category?.name!}
+                                  value={category?.name!}
+                                >
+                                  {category?.name}
+                                </SelectItem>
+                              )
+                            ) : (
+                              <SelectItem
+                                key={category?.name!}
+                                value={category?.name!}
+                              >
+                                {category?.name}
+                              </SelectItem>
+                            )
+                          )}
                         </Select>
                       ))}
 
@@ -181,14 +186,14 @@ export const NewPostModal = ({
                     ) : (
                       <Button
                         variant="ghost"
-                        color="success"
+                        color="secondary"
                         startContent={
                           !creatingPost && <Send className="w-4 h-4" />
                         }
                         type="submit"
                         isLoading={creatingPost}
                       >
-                        Create
+                        {creatingPost ? "Creating" : "Create"}
                       </Button>
                     )}
                   </ModalFooter>

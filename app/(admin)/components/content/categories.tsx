@@ -40,7 +40,7 @@ import { PageLoading } from "@/components/layout/loading";
 import { updateName } from "@/lib/actions/category.actions";
 
 type TCategory = {
-  blogs: any;
+  topics: any;
 } & Category;
 
 const NewModal = ({
@@ -401,7 +401,7 @@ export const Categories = () => {
   const fetchCategories = async () => {
     setLoading(true);
     const res = await getCategories();
-    res && setCategories(res as TCategory[]);
+    res && setCategories(res);
     setLoading(false);
   };
 

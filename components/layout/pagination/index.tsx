@@ -19,7 +19,7 @@ export const Pagination = () => {
 
   return (
     <div className="relative">
-      <div className="relative rounded-sm px-6 py-2 mb-2 shadow-md dark:shadow-gray-200/20 bg-gray-50/75 dark:bg-neutral-900/75 max-w-full overflow-x-auto">
+      <div className="relative rounded-sm px-6 py-2 mb-2 shadow-md dark:shadow-white/5 bg-gray-50/75 dark:bg-neutral-900/75 max-w-full overflow-x-auto">
         {routes.length === 0 ? (
           <div className="flex items-center">
             <div className="w-12 h-2 rounded bg-gray-300 animate-pulse"></div>

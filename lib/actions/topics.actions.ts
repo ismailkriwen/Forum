@@ -1,5 +1,6 @@
 "use server";
 
+import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
 
 const createTopic = async ({
@@ -16,22 +17,12 @@ const createTopic = async ({
   return topic;
 };
 
-const getTopics = async (cat?: string) => {
-  if (cat) {
-    const topics = await prisma.topic.findMany({
-      where: {
-        categories: { some: { name: { mode: "insensitive", equals: cat } } },
-      },
-      include: { posts: true, categories: true },
-    });
+const getTopics = async () => {
+  const topics = await prisma.topic.findMany({
+    include: { posts: true, categories: true },
+  });
 
-    return topics;
-  } else {
-    const topics = await prisma.topic.findMany({
-      include: { posts: true, categories: true },
-    });
-    return topics;
-  }
+  return topics;
 };
 
 const getTopic = async (id: string) => {
@@ -46,4 +37,39 @@ const getTopic = async (id: string) => {
   return topic;
 };
 
-export { createTopic, getTopics, getTopic };
+const CreateTopic = async ({
+  title,
+  content,
+  cat,
+}: {
+  title: string;
+  content: string;
+  cat: string;
+}) => {
+  const session = await getAuthSession();
+  if (!session) return;
+  const { user } = session;
+
+  const topic = await prisma.topic.create({
+    data: {
+      title,
+      categories: {
+        connect: { name: cat },
+      },
+    },
+  });
+
+  if (!topic) return;
+  const post = await prisma.post.create({
+    data: {
+      content,
+      user: { connect: { email: user.email! } },
+      topic: { connect: { id: topic.id } },
+    },
+    include: { user: true },
+  });
+
+  return post;
+};
+
+export { createTopic, getTopics, getTopic, CreateTopic };

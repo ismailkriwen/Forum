@@ -1,26 +1,23 @@
 "use client";
 
-import { NewPostModal } from "@/components/actions/new-post-modal";
+import { NewPostModal } from "../modals/new-post";
 import { useSignInContext } from "@/components/hooks/useSignIn";
 import { colors } from "@/constants";
 import { getCategory } from "@/lib/actions/category.actions";
-import { getTopics } from "@/lib/actions/topics.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import {
   Avatar,
   Button,
-  Chip,
   Pagination,
   Tooltip,
-  Link as UILink,
+  Link,
   useDisclosure,
 } from "@nextui-org/react";
 import { Category, Post, Topic } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
 const TOPICS_PER_PAGE = 10;
@@ -37,7 +34,7 @@ const UserInfo = ({ id }: { id: string }) => {
   });
 
   return (
-    <UILink href={`/profile/${user?.name}`}>
+    <Link href={`/profile/${user?.name}`}>
       <Avatar
         src={user?.image as string}
         showFallback
@@ -48,47 +45,42 @@ const UserInfo = ({ id }: { id: string }) => {
             : "default"
         }
       />
-    </UILink>
+    </Link>
   );
 };
 
-const TopicsPage = ({
+export const CategoryPageComponent = ({
+  params,
   searchParams,
 }: {
+  params: { name: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  if (!searchParams.page) redirect("/topics?page=1");
+  if (!searchParams.page) redirect("?page=1");
 
+  const { name } = params;
   const { onOpen: signInOnOpen, setDismissable } = useSignInContext();
 
   const router = useRouter();
   const { data: session } = useSession();
-  const [topicsLoading, setTopicsLoading] = useState(false);
   const [switchingPages, setSwitchingPages] = useState(false);
-  const [topics, setTopics] = useState<TTopic[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const page = Number(searchParams.page);
-  const pages = Math.ceil(topics.length / TOPICS_PER_PAGE);
+  const { data: topics, isLoading: topicsLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => await getCategory(name),
+  });
 
-  const fetcher = useCallback(async () => {
-    setTopicsLoading(true);
-    const res = await getTopics();
-    res && setTopics(res);
-    setTopicsLoading(false);
-  }, [searchParams.category]);
+  const page = Number(searchParams.page);
+  // @ts-ignore
+  const pages = Math.ceil(topics?.topics?.length / TOPICS_PER_PAGE);
 
   const items = useMemo(() => {
     const start = (page - 1) * TOPICS_PER_PAGE;
     const end = start + TOPICS_PER_PAGE;
 
-    return topics.slice(start, end).reverse();
+    return topics?.topics.slice(start, end).reverse();
   }, [page, topics]);
-
-  useEffect(() => {
-    if (!session || !session.user) return;
-    fetcher();
-  }, [fetcher, searchParams, session]);
 
   useEffect(() => {
     if (!session?.user) {
@@ -120,7 +112,7 @@ const TopicsPage = ({
               </Button>
               {!topicsLoading && (
                 <Pagination
-                  radius="full"
+                  radius="sm"
                   size="sm"
                   isCompact
                   showShadow
@@ -132,6 +124,9 @@ const TopicsPage = ({
                     setSwitchingPages(true);
                     router.push(`?page=${e}`);
                     setSwitchingPages(false);
+                  }}
+                  classNames={{
+                    item: "bg-transparent",
                   }}
                 />
               )}
@@ -156,34 +151,21 @@ const TopicsPage = ({
             </div>
           </div>
           <div className="z-0 overflow-y-auto">
-            {items.map((topic) => (
+            {items?.map((topic: TTopic) => (
               <div
                 className="flex items-center justify-between w-full"
                 key={topic.id}
               >
-                <div className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
-                  <Link href={`/topics/${topic.id}`}>
-                    <div className="pb-2 hover:underline">{topic.title}</div>
-                    <div className="flex gap-2 items-center">
-                      {topic.categories.map((cat) => (
-                        <Chip
-                          variant="bordered"
-                          size="sm"
-                          as={UILink}
-                          href={`/category/${cat.name}`}
-                          style={{
-                            color: cat.color as string,
-                            borderColor: cat.color as string,
-                          }}
-                          className="text-[10px]"
-                          key={cat.id}
-                        >
-                          {cat.name}
-                        </Chip>
-                      ))}
-                    </div>
+                <div className="w-full grid grid-cols-12 px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
+                  <Link
+                    color="foreground"
+                    underline="hover"
+                    href={`/topics/${topic.id}`}
+                    className=""
+                  >
+                    {topic.title}
                   </Link>
-                  <div className="text-center">{topic.posts.length}</div>
+                  <div className="text-center">{topic?.posts?.length}</div>
                   <div className="text-right">
                     <UserInfo id={topic?.posts[0]?.userId} />
                   </div>
@@ -191,7 +173,7 @@ const TopicsPage = ({
               </div>
             ))}
           </div>
-          <div className="fixed bottom-14 right-3">
+          <div className="fixed max-md:bottom-16 bottom-3 right-3">
             <Tooltip
               content="New Topic"
               showArrow
@@ -212,20 +194,18 @@ const TopicsPage = ({
               </Button>
             </Tooltip>
           </div>
-          <NewPostModal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            session={session}
-            cat={null}
-          />
         </>
       ) : (
         <div className="text-center font-semibold text-lg">
           Waiting for authentication.
         </div>
       )}
+      <NewPostModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        session={session}
+        cat={params.name}
+      />
     </>
   );
 };
-
-export default TopicsPage;

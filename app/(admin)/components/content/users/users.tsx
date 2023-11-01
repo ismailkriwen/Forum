@@ -32,7 +32,7 @@ import { EditModal } from "./modals/edit";
 export interface IUser {
   name: string | null;
   email: string | null;
-  role: string | null;
+  groups: Role[] | null;
 }
 
 export const Users = () => {
@@ -100,6 +100,7 @@ export const Users = () => {
         id: true,
         name: true,
         role: true,
+        groups: true,
         email: true,
         image: true,
       },
@@ -186,6 +187,7 @@ export const Users = () => {
         topContentPlacement="outside"
         fullWidth
         removeWrapper
+        className="z-0"
       >
         <TableHeader>
           <TableColumn align="start">Name</TableColumn>
@@ -221,15 +223,24 @@ export const Users = () => {
                 </TableCell>
                 <TableCell>
                   <div className="relative flex justify-end items-center gap-2">
-                    <Dropdown placement="left-start">
+                    <Dropdown
+                      placement="left-start"
+                      size="sm"
+                      radius="sm"
+                      showArrow
+                    >
                       <DropdownTrigger>
                         <Button
                           isIconOnly
                           size="sm"
                           variant="light"
                           onClick={() => {
-                            const { name, email, role } = user;
-                            setSelectedUserToEdit({ name, email, role });
+                            const { name, email, groups } = user;
+                            setSelectedUserToEdit({
+                              name,
+                              email,
+                              groups,
+                            });
                           }}
                         >
                           <BiDotsVerticalRounded className="w-5 h-5" />

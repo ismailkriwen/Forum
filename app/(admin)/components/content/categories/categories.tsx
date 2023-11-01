@@ -159,11 +159,12 @@ export const Categories = () => {
         topContentPlacement="outside"
         fullWidth
         removeWrapper
+        className="z-0"
       >
         <TableHeader>
           <TableColumn align="start">Name</TableColumn>
           <TableColumn align="start">Color</TableColumn>
-          <TableColumn align="start">Blogs</TableColumn>
+          <TableColumn align="start">Topics</TableColumn>
           <TableColumn align="center">Actions</TableColumn>
         </TableHeader>
         <TableBody

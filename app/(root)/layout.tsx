@@ -1,14 +1,16 @@
 import { PageLoading } from "@/components/layout/loading";
 import { Navbar } from "@/components/layout/navbar/index";
 import { Pagination } from "@/components/layout/pagination/index";
-import { ProvidersContainer } from "@/components/providers/main";
-import { ThemeController } from "@/components/theme";
+import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/constants";
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Announcement } from "./Announcement";
-import { ToastContainer } from "react-toastify";
+import { BottomBar } from "@/components/bottom-bar";
+
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: {
@@ -23,16 +25,22 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ProvidersContainer>
+        <NextTopLoader
+          height={3}
+          color="#27AE60"
+          easing="cubic-bezier(.35,.21,0,1)"
+          showSpinner={false}
+        />
+        <Providers>
           <Navbar />
           <PageLoading />
-          <main className="container pt-4">
+          <main className="container pt-4 h-fit">
             <Pagination />
             <Announcement />
             {children}
           </main>
-          <ThemeController />
-        </ProvidersContainer>
+          <BottomBar />
+        </Providers>
         <ToastContainer
           position="bottom-right"
           autoClose={2000}

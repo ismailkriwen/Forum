@@ -10,13 +10,12 @@ export const NewPost = ({ session }: { session: Session | null }) => {
 
   return (
     <>
-      <div className="fixed bottom-14 right-3">
+      <div className="fixed bottom-3 right-3 max-sm:bottom-14 max-md:bottom-20">
         <Tooltip
           content="Post a new topic"
           showArrow
           placement="left"
           radius="sm"
-          color="primary"
           size="sm"
         >
           <Button
@@ -24,7 +23,7 @@ export const NewPost = ({ session }: { session: Session | null }) => {
             size="sm"
             radius="full"
             variant="ghost"
-            color="primary"
+            color="secondary"
             onPress={onOpen}
           >
             <Plus className="w-4 h-4" />

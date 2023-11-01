@@ -1,11 +1,10 @@
 import { prisma } from "@/lib/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Role } from "@prisma/client";
-import NextAuth, { getServerSession, type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
+import NextAuth, { getServerSession, type NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -19,9 +18,9 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
+          response_type: "code",
+        },
+      },
     }),
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
@@ -50,26 +49,23 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token }) => {
-      if (!token.email) return session;
+    session: async ({ session }) => {
       const user = await prisma.user.findUnique({
-        where: { email: token.email },
-        select: { email: true, image: true, name: true, role: true },
+        where: { email: session.user?.email! },
       });
-      session.user.email = user?.email;
-      session.user.image = user?.image;
-      session.user.name = user?.name;
-      session.user.role = user?.role as Role;
-
-      return session;
+      return {
+        ...session,
+        user: {
+          id: user?.id,
+          name: user?.name,
+          email: user?.email,
+          role: user?.role,
+          groups: user?.groups,
+          image: user?.image,
+        },
+      };
     },
-    jwt: async ({ token, user }) => {
-      if (user) {
-        return {
-          ...token,
-          user: { ...user },
-        };
-      }
+    jwt: async ({ token }) => {
       return token;
     },
   },

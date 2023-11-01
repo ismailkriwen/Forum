@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  updateColor,
+  updateDescription,
+  updateName,
+  updateRanks,
+} from "@/lib/actions/category.actions";
+import {
   Button,
   Input,
   Modal,
@@ -8,10 +14,15 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Switch,
+  Textarea,
+  Tooltip,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { TCategory } from "../categories";
-import { updateColor, updateName } from "@/lib/actions/category.actions";
+import { AlertCircle, Edit } from "lucide-react";
+import { Role } from "@prisma/client";
 
 export const EditModal = ({
   isOpen,
@@ -27,36 +38,68 @@ export const EditModal = ({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(category?.name as string);
   const [color, setColor] = useState(category?.color as string);
-  const [error, setError] = useState("");
+  const [description, setDescription] = useState(
+    category?.description as string
+  );
+  const [ranks, setRanks] = useState(category?.ranks);
 
   const update = async (close: () => void) => {
-    setLoading(true);
-    if (name !== "" && name !== category.name) {
-      const res = await updateName({
-        name: category?.name as string,
-        newName: name,
-      });
-      if (res?.error) setError(res.error);
-      else {
-        close();
-        mutate();
+    try {
+      setLoading(true);
+      if (name !== "" && name !== category.name) {
+        const res = await updateName({
+          name: category?.name as string,
+          newName: name,
+        });
+        if (res?.error) toast.error(res.error);
+        else {
+          close();
+          mutate();
+        }
       }
-    }
 
-    if (color != "" && color !== category.color) {
-      const res = await updateColor({ name: category?.name as string, color });
-      if (res?.error) setError(res.error);
+      if (color != "" && color !== category.color) {
+        const res = await updateColor({ name: category?.name!, color });
+        if (res?.error) toast.error(res.error);
+        else {
+          close();
+          mutate();
+        }
+      }
+
+      if (description !== category.description) {
+        const res = await updateDescription({
+          name: category?.name!,
+          description,
+        });
+        if (res) toast.error("Something went wrong.");
+        else {
+          close();
+          mutate();
+        }
+      }
+
+      const res = await updateRanks({
+        name: category?.name!,
+        ranks,
+      });
+      if (res) toast.error("Something went wrong.");
       else {
         close();
         mutate();
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    setError("");
-  }, [name, color]);
+    if (!isOpen) return;
+    setName(category.name!);
+    setColor(category.color!);
+    setDescription(category.description!);
+    setRanks(category.ranks as Role[]);
+  }, [isOpen]);
 
   return (
     <>
@@ -64,40 +107,90 @@ export const EditModal = ({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex items-center flex-col gap-2">
-                Create Category
+              <ModalHeader className="flex items-center gap-2">
+                <Edit className="w-5 h-5" />
+                Edit Category
               </ModalHeader>
-              <ModalBody>
-                <div className="flex items-center justify-between gap-5">
-                  <div className="flex items-start justify-start gap-3 flex-col">
+              <ModalBody className="overflow-y-auto max-h-96">
+                <div className="flex items-center justify-between gap-5 max-md:flex-col">
+                  <div className="flex items-start h-full justify-between gap-3 md:flex-col">
                     <div className="text-default-400">Name</div>
                     <div className="text-default-400">Color</div>
+                    <div className="text-default-400">Description</div>
+                    <div className="text-default-400 flex items-center gap-2">
+                      Ranks{" "}
+                      <Tooltip
+                        content="Allowed groups to this specific category."
+                        placement="top"
+                        showArrow
+                        size="sm"
+                      >
+                        <AlertCircle className="w-4 h-4" />
+                      </Tooltip>
+                    </div>
                   </div>
                   <div className="flex items-center justify-start gap-3 flex-col">
-                    <Input name="name" value={name} onValueChange={setName} />
+                    <Input
+                      name="name"
+                      value={name}
+                      onValueChange={setName}
+                      variant="bordered"
+                      size="sm"
+                      radius="sm"
+                    />
                     <Input
                       variant="bordered"
                       type="color"
                       name="color"
+                      size="sm"
                       value={color}
                       onValueChange={setColor}
+                      classNames={{
+                        inputWrapper: "border-transparent",
+                      }}
                     />
+                    <Textarea
+                      variant="bordered"
+                      size="sm"
+                      radius="sm"
+                      value={description}
+                      onValueChange={setDescription}
+                    />
+                    <div className="flex items-center justify-between w-full gap-2">
+                      <div>
+                        {Object.keys(Role).map((role, i) => (
+                          <div key={i}>{role}</div>
+                        ))}
+                      </div>
+                      <div className="flex flex-col">
+                        {Object.keys(Role).map((role, i) => (
+                          <Switch
+                            key={i}
+                            defaultSelected={ranks.includes(role as Role)}
+                            onChange={({ target }) => {
+                              const arr = target.checked
+                                ? [...ranks, role]
+                                : ranks.filter((e) => e != role);
+                              setRanks(arr);
+                            }}
+                            size="sm"
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {error && (
-                  <div className="mt-2 text-danger text-center font-semibold">
-                    {error}
-                  </div>
-                )}
               </ModalBody>
               <ModalFooter>
-                <Button variant="ghost" onPress={onClose}>
+                <Button variant="light" size="sm" radius="sm" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
                   color="primary"
+                  variant="ghost"
+                  radius="sm"
+                  size="sm"
                   isLoading={loading}
-                  isDisabled={color == category.color && name == category.name}
                   onPress={() => update(onClose)}
                 >
                   {loading ? "Saving" : "Save"}

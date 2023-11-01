@@ -5,14 +5,31 @@ import { Role } from "@prisma/client";
 
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
 import { compare, hash } from "bcrypt";
+import { pusherServer } from "@/lib/pusher";
 
-const getUser = async ({ name }: { name: string }) => {
-  const res = await prisma.user.findFirst({ where: { name } });
+const getUserByEmail = async ({ email }: { email: string }) => {
+  const res = await prisma.user.findFirst({
+    where: { email },
+    include: { likes: true, posts: true, notifications: true },
+  });
   return res;
 };
 
-const getUserByAny = async ({ query }: { query: {} }) =>
-  await prisma.user.findFirst(query);
+const getUserById = async ({ id }: { id: string }) => {
+  const res = await prisma.user.findFirst({
+    where: { id },
+    include: { likes: true, posts: true, notifications: true },
+  });
+  return res;
+};
+
+const getUser = async ({ name }: { name: string }) => {
+  const res = await prisma.user.findFirst({
+    where: { name },
+    include: { likes: true, posts: true, notifications: true },
+  });
+  return res;
+};
 
 const getUsers = async (query: Object) => {
   const users = await prisma.user.findMany(query);
@@ -22,11 +39,11 @@ const getUsers = async (query: Object) => {
 
 const deleteUser = async ({ name, email }: { name: string; email: string }) => {
   const session = await getAuthSession();
-  if (!session || session.user.role !== Role.Admin) return;
+  if (!session || !session.user.groups.includes(Role.Admin)) return;
 
   await prisma.user.delete({ where: { email } });
   await prisma.user.update({
-    where: { email: session?.user?.email as string },
+    where: { email: session?.user?.email! },
     data: {
       logs: {
         create: {
@@ -38,6 +55,8 @@ const deleteUser = async ({ name, email }: { name: string; email: string }) => {
       },
     },
   });
+
+  return true;
 };
 
 const updateName = async ({ email, name }: { email: string; name: string }) => {
@@ -52,9 +71,23 @@ const updateName = async ({ email, name }: { email: string; name: string }) => {
 };
 
 const updateRole = async ({ email, role }: { email: string; role: Role }) => {
-  await prisma.user.update({
+  const user = await prisma.user.update({
     where: { email },
     data: { role },
+  });
+  return user;
+};
+
+const updateGroups = async ({
+  email,
+  groups,
+}: {
+  email: string;
+  groups: Role[];
+}) => {
+  await prisma.user.update({
+    where: { email },
+    data: { groups },
   });
 };
 
@@ -88,20 +121,6 @@ const userExistance = async ({
   if (!validPass) return { error: "Password is incorrect" };
 };
 
-const oldUserExistance = async ({
-  email,
-  username: name,
-}: {
-  email: string;
-  username: string;
-}) => {
-  const emailExists = await prisma.user.findUnique({ where: { email } });
-  if (emailExists) return { error: "Email already exists" };
-
-  const nameExists = await prisma.user.findFirst({ where: { name } });
-  if (nameExists) return { error: "Username already exists" };
-};
-
 const createUser = async ({
   username: name,
   email,
@@ -111,45 +130,33 @@ const createUser = async ({
   email: string;
   password: string;
 }) => {
+  const emailExists = await prisma.user.findUnique({ where: { email } });
+  if (emailExists) return { error: "Email already exists" };
+
+  const nameExists = await prisma.user.findFirst({ where: { name } });
+  if (nameExists) return { error: "Username already exists" };
+
   const password = await hash(pass, 12);
   const user = await prisma.user.create({
     data: { name, email, password },
   });
 
-  if (user) return { success: true };
-};
-
-const updateStatus = async ({
-  email,
-  status,
-}: {
-  email: string;
-  status: boolean;
-}) => {
-  await prisma.user.update({
-    where: { email },
-    data: {
-      online: status,
-    },
-  });
+  if (!user) return { error: "Something went wrong." };
 };
 
 const updateInfo = async ({
   email,
   bio,
-  location,
   gender,
 }: {
   email: string;
   bio: string;
-  location: string;
   gender: string;
 }) => {
   const user = await prisma.user.update({
     where: { email },
     data: {
       bio,
-      location,
       gender,
     },
   });
@@ -172,18 +179,176 @@ const updateImage = async ({
   return user;
 };
 
+const followUser = async ({ email }: { email: string }) => {
+  const session = await getAuthSession();
+  if (!session) return;
+  const { user: sender } = session;
+
+  const target = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  // @ts-ignore
+  const list = target.followers.filter((e) => e.email != sender.email!) || [];
+  if (list.length > 0) return;
+
+  const first = prisma.user.update({
+    where: { email },
+    data: {
+      followers: { push: sender.email! },
+    },
+  });
+
+  const second = prisma.user.update({
+    where: { email: sender?.email! },
+    data: {
+      followings: {
+        push: target?.email!,
+      },
+    },
+  });
+
+  const res = await prisma.$transaction([first, second]);
+  if (!res) return;
+
+  await prisma.user.update({
+    where: { email: target?.email! },
+    data: {
+      notifications: {
+        create: {
+          type: "follow",
+          from: sender.name,
+        },
+      },
+    },
+  });
+
+  pusherServer.trigger(`${target?.email}`, "notify", null);
+
+  return res;
+};
+
+const unfollowUser = async ({ email }: { email: string }) => {
+  const session = await getAuthSession();
+  if (!session) return;
+  const { user: sender } = session;
+
+  const target = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  // @ts-ignore
+  const list = target.followers.filter((e) => e.email != sender.email!) || [];
+  if (list.length == 0) return;
+
+  const first = prisma.user.update({
+    where: { email },
+    data: {
+      followers: {
+        // @ts-ignore
+        set: target?.followers.filter((e) => e.email == sender?.email),
+      },
+    },
+  });
+
+  const pullUser = await prisma.user.findUnique({
+    where: { email: sender?.email! },
+  });
+
+  const second = prisma.user.update({
+    where: { email: sender?.email! },
+    data: {
+      followings: {
+        // @ts-ignore
+        set: pullUser?.followings.filter((e) => e.email == target.email),
+      },
+    },
+  });
+
+  const res = await prisma.$transaction([first, second]);
+  if (!res) return;
+
+  return res;
+};
+
+const followingsList = async ({ name }: { name: string }) => {
+  const user = await prisma.user.findFirst({
+    where: { name },
+  });
+
+  if (!user) return;
+
+  return user.followings;
+};
+
+const followersList = async ({ name }: { name: string }) => {
+  const user = await prisma.user.findFirst({
+    where: { name },
+  });
+
+  if (!user) return;
+
+  return user.followers;
+};
+
+const updateGender = async ({
+  email,
+  gender,
+}: {
+  email: string;
+  gender: string;
+}) => {
+  const session = await getAuthSession();
+  if (!session) return;
+
+  const res = await prisma.user.update({
+    where: { email },
+    data: { gender },
+  });
+
+  return res;
+};
+
+const updateLocation = async ({
+  email,
+  location,
+}: {
+  email: string;
+  location: string;
+}) => {
+  const session = await getAuthSession();
+  if (!session) return;
+
+  const res = await prisma.user.update({
+    where: { email },
+    data: { location },
+  });
+
+  return res;
+};
+
 export {
+  getUserByEmail,
+  getUserById,
   createUser,
   deleteUser,
   getUser,
-  getUserByAny,
   getUsers,
-  oldUserExistance,
   updateName,
   updatePassword,
   updateRole,
-  updateStatus,
   userExistance,
   updateInfo,
   updateImage,
+  followUser,
+  unfollowUser,
+  followingsList,
+  followersList,
+  updateGroups,
+  updateGender,
+  updateLocation,
 };

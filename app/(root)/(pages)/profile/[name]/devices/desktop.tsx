@@ -1,13 +1,14 @@
-import { getUser } from "@/lib/actions/user.actions";
+import { followUser, getUser, unfollowUser } from "@/lib/actions/user.actions";
 import { Role, type User as TUser } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 import { unslug } from "@/lib/slugify";
 import { Avatar, Button, useDisclosure } from "@nextui-org/react";
-import { Camera, Settings, UserPlus } from "lucide-react";
+import { Camera, Settings, UserMinus, UserPlus } from "lucide-react";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 import { ProfileAbout } from "../about";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
@@ -21,6 +22,18 @@ export const Desktop = ({ name }: { name: string }) => {
     queryKey: ["profile_info"],
     queryFn: async () => await getUser({ name: unslug(name) }),
   });
+
+  const follow = async () => {
+    const res = await followUser({ email: user?.email! });
+    if (res) toast.success(`Followed ${user?.name}`);
+    else toast.error("Something went wrong.");
+  };
+
+  const unfollow = async () => {
+    const res = await unfollowUser({ email: user?.email! });
+    if (res) toast.warning(`UnFollowed ${user?.name}`);
+    else toast.error("Something went wrong.");
+  };
 
   const {
     isOpen: editIsOpen,
@@ -82,18 +95,31 @@ export const Desktop = ({ name }: { name: string }) => {
               </div>
             </div>
             {user?.bio && (
-              <div className="italic text-default-600 mt-2">{user.bio}</div>
+              <div className="italic text-default-600 mt-3">{user.bio}</div>
             )}
           </div>
           <div className="flex items-center gap-3">
             {!owner && (
               <>
-                <Button
-                  radius="sm"
-                  startContent={<UserPlus className="w-4 h-4" />}
-                >
-                  Add Friend
-                </Button>
+                {user?.followers.includes(session?.user?.email!) ? (
+                  <Button
+                    radius="sm"
+                    variant="flat"
+                    startContent={<UserMinus className="w-4 h-4" />}
+                    onPress={unfollow}
+                  >
+                    Unfollow
+                  </Button>
+                ) : (
+                  <Button
+                    radius="sm"
+                    variant="flat"
+                    startContent={<UserPlus className="w-4 h-4" />}
+                    onPress={follow}
+                  >
+                    Follow
+                  </Button>
+                )}
                 <Button
                   radius="sm"
                   variant="ghost"

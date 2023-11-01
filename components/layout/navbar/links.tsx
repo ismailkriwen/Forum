@@ -47,10 +47,9 @@ export const NavbarLinks = () => {
             as={path}
             key={route.label}
             className={cn(
-              "flex items-center justify-center transition",
-              unslug(pathname) === path
-                ? "font-bold text-danger"
-                : "dark:text-white hover:text-danger/70"
+              "flex items-center justify-center transition-opacity",
+              unslug(pathname) === path && "font-bold text-danger",
+              unslug(pathname) !== path && "hover:opacity-80"
             )}
           >
             <div className="w-6 h-6 md:hidden">

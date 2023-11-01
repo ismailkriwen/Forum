@@ -17,7 +17,7 @@ export const Navbar = () => {
           onClick={() => setOpen((prev) => !prev)}
         />
         <div>
-          <AvatarProfile />
+          <AvatarProfile placement="bottom" />
         </div>
       </div>
     </div>

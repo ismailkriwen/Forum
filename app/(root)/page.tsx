@@ -10,7 +10,7 @@ const HomePage = async () => {
   return (
     <>
       <div>{session && <NewPost session={session} />}</div>
-      <div className="mt-4">
+      <div className="mt-4 pb-20">
         <PostsFeed />
         <Statistics />
       </div>

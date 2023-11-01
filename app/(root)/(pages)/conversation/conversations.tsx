@@ -1,8 +1,9 @@
 "use client";
 
 import { PageLoading } from "@/components/layout/loading";
+import { colors } from "@/constants";
 import { getConversations } from "@/lib/actions/conversation.actions";
-import { getUserByAny } from "@/lib/actions/user.actions";
+import { getUserByEmail } from "@/lib/actions/user.actions";
 import {
   Avatar,
   Button,
@@ -24,11 +25,10 @@ import {
   User as TUser,
 } from "@prisma/client";
 import { MailPlus, Search } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { NewMessage } from "./new-modal";
 import { useSession } from "next-auth/react";
-import { colors } from "@/constants";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
+import { NewMessage } from "./new-modal";
 
 interface IConversation extends TConversation {
   messages: Message[];
@@ -39,7 +39,7 @@ const ROWS_PER_PAGE = 10;
 const UserInfo = ({ email }: { email: string }) => {
   const { data: user } = useQuery({
     queryKey: ["profile_by_email__conversation__userInfo"],
-    queryFn: async () => await getUserByAny({ query: { where: { email } } }),
+    queryFn: async () => await getUserByEmail({ email }),
   });
 
   return (

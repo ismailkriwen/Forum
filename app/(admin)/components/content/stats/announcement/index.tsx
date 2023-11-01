@@ -55,6 +55,7 @@ export const Announcement = () => {
                 onValueChange={setIsEnabled}
                 aria-label="enabled"
                 size="sm"
+                className="z-0"
               />
             </div>
             <div className="mt-4">

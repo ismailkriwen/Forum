@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { IUser } from "../users";
-import { updateName, updateRole } from "@/lib/actions/user.actions";
-import { Role } from "@prisma/client";
+import { updateGroups, updateName } from "@/lib/actions/user.actions";
 import {
   Button,
   Input,
@@ -12,11 +9,13 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
+  Switch,
 } from "@nextui-org/react";
+import { Role } from "@prisma/client";
 import { Edit } from "lucide-react";
-import { colors } from "@/constants";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { IUser } from "../users";
 
 export const EditModal = ({
   isOpen,
@@ -30,26 +29,34 @@ export const EditModal = ({
   mutate: () => Promise<void>;
 }) => {
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState(user?.role);
-  const [name, setName] = useState(user?.name);
-  const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [groups, setGroups] = useState<Role[]>([]);
 
   const save = async () => {
-    if (role === user?.role && name === user?.name) return;
     setLoading(true);
-    if (role !== user?.role)
-      await updateRole({ email: user?.email as string, role: role as Role });
     if (name !== user?.name) {
-      if (name === "") return setError("Name can't be empty");
+      if (name === "") return toast.error("Name can't be empty");
       const res = await updateName({
-        email: user?.email as string,
-        name: name as string,
+        email: user?.email!,
+        name: name!,
       });
-      if (res?.error) setError(res?.error);
+      if (res?.error) toast.error(res?.error);
     }
+    await updateGroups({ email: user?.email!, groups });
     mutate();
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setName(user?.name!);
+    setGroups(user?.groups as Role[]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!user?.groups) return;
+    setGroups(user?.groups);
+  }, [user?.groups]);
 
   return (
     <>
@@ -70,7 +77,7 @@ export const EditModal = ({
                 <div className="flex items-center justify-between gap-5">
                   <div className="flex items-start justify-start gap-3 flex-col">
                     <div className="text-default-400">Name</div>
-                    <div className="text-default-400">Role</div>
+                    <div className="text-default-400">Groups</div>
                   </div>
                   <div className="flex items-center justify-start gap-3 flex-col">
                     <Input
@@ -78,42 +85,42 @@ export const EditModal = ({
                       value={name as string}
                       onValueChange={setName}
                     />
-                    <Select
-                      size="sm"
-                      defaultSelectedKeys={[user?.role || Role.Member]}
-                      labelPlacement="outside"
-                      onChange={(e) => setRole(e.target.value)}
-                    >
-                      {Object.keys(Role).map((role) => (
-                        <SelectItem
-                          key={role}
-                          value={role}
-                          /* @ts-ignore */
-                          color={colors[role]}
-                        >
-                          {role}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    <div className="flex justify-between w-full items-center">
+                      <div>
+                        {Object.keys(Role).map((role, i) => (
+                          <div key={i}>{role}</div>
+                        ))}
+                      </div>
+                      <div>
+                        {Object.keys(Role).map((role, i) => (
+                          <div key={i}>
+                            <Switch
+                              defaultSelected={groups?.includes(role as Role)}
+                              onChange={({ target }) => {
+                                const arr = target.checked
+                                  ? [...groups, role]
+                                  : groups.filter((e) => e != role);
+                                setGroups(arr);
+                              }}
+                              size="sm"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {error && (
-                  <div className="mt-2 text-danger text-center font-semibold">
-                    {error}
-                  </div>
-                )}
               </ModalBody>
               <ModalFooter>
-                <Button variant="ghost" onPress={onClose}>
+                <Button variant="light" radius="sm" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
                   isLoading={loading}
-                  isDisabled={
-                    role == user?.role || name == user?.name || name == ""
-                  }
+                  variant="ghost"
+                  radius="sm"
                   color="primary"
-                  onPress={() => save()}
+                  onPress={save}
                 >
                   {loading ? "Saving" : "Save"}
                 </Button>

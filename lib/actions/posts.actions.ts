@@ -2,8 +2,9 @@
 
 import { TPost } from "@/app/(root)/(pages)/topics/[id]/post";
 import { prisma } from "@/lib/db";
-import { pusherServer } from "../pusher";
+import { pusherServer } from "@/lib/pusher";
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
+import { Role } from "@prisma/client";
 
 const createPost = async ({
   topicId,
@@ -20,6 +21,7 @@ const createPost = async ({
       user: { connect: { email: creator } },
       topic: { connect: { id: topicId } },
     },
+    include: { user: true },
   });
 
   return post;
@@ -131,7 +133,7 @@ const latestPosts = async () => {
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
     take: 5,
-    include: { topic: { include: { categories: true } }, user: true },
+    include: { topic: { include: { category: true } }, user: true },
   });
 
   return posts;
@@ -141,12 +143,12 @@ const postsByCategory = async (category: string) => {
   const posts = await prisma.post.findMany({
     where: {
       topic: {
-        categories: { some: { name: category } },
+        category: { name: category },
       },
     },
     orderBy: { createdAt: "desc" },
     take: 5,
-    include: { topic: { include: { categories: true } }, user: true },
+    include: { topic: { include: { category: true } }, user: true },
   });
 
   return posts;
@@ -172,6 +174,9 @@ const editPostContent = async ({
 };
 
 const deletePost = async (id: string) => {
+  const session = await getAuthSession();
+  if (!session || !session.user.groups.includes(Role.Admin)) return;
+
   const de = await prisma.post.delete({ where: { id } });
   return de;
 };
