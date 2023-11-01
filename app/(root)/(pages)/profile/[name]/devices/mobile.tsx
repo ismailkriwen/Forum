@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 import { unslug } from "@/lib/slugify";
 import { Avatar, Button, useDisclosure } from "@nextui-org/react";
-import { Settings, UserMinus, UserPlus } from "lucide-react";
+import { Settings, Trash, UserMinus, UserPlus } from "lucide-react";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { useQuery } from "react-query";
@@ -13,6 +13,7 @@ import { ProfileAbout } from "../about";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
 import { UploadImageModal } from "../modals/uploadImage";
+import { DeleteModal } from "../modals/delete";
 
 export const Mobile = ({ name }: { name: string }) => {
   const { data: session } = useSession();
@@ -52,6 +53,12 @@ export const Mobile = ({ name }: { name: string }) => {
     onOpen: imgOnOpen,
     onOpenChange: imgOnOpenChange,
     onClose: imgOnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: deleteIsOpen,
+    onOpen: deleteOnOpen,
+    onOpenChange: deleteOnOpenChange,
   } = useDisclosure();
 
   return (
@@ -109,6 +116,31 @@ export const Mobile = ({ name }: { name: string }) => {
                 </Button>
               </>
             )}
+            {owner ? (
+              <Button
+                color="danger"
+                variant="flat"
+                radius="sm"
+                size="sm"
+                onPress={deleteOnOpen}
+                isIconOnly
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            ) : (
+              session?.user?.groups.includes(Role.Admin) && (
+                <Button
+                  color="danger"
+                  variant="flat"
+                  radius="sm"
+                  size="sm"
+                  onPress={deleteOnOpen}
+                  isIconOnly
+                >
+                  <Trash className="w-4 h-4" />
+                </Button>
+              )
+            )}
             <Button
               isIconOnly
               variant="ghost"
@@ -124,10 +156,6 @@ export const Mobile = ({ name }: { name: string }) => {
       </div>
       <EditModal
         user={user}
-        editRole={
-          session?.user?.role === Role.Admin ||
-          session?.user?.role === Role.Moderator
-        }
         isOpen={editIsOpen}
         onOpen={editOnOpen}
         onOpenChange={editOnOpenChange}
@@ -144,6 +172,19 @@ export const Mobile = ({ name }: { name: string }) => {
           isOpen={imgIsOpen}
           onOpenChange={imgOnOpenChange}
           onClose={imgOnClose}
+        />
+      )}
+      {owner ? (
+        <DeleteModal
+          isOpen={deleteIsOpen}
+          onOpenChange={deleteOnOpenChange}
+          user={user}
+        />
+      ) : (
+        <DeleteModal
+          isOpen={deleteIsOpen}
+          onOpenChange={deleteOnOpenChange}
+          user={user}
         />
       )}
     </>

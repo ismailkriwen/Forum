@@ -7,12 +7,11 @@ import { NavbarLinks } from "./links";
 
 import { AvatarProfile } from "@/components/avatar-profile";
 import { useSignInContext } from "@/components/hooks/useSignIn";
-import { Notifications } from "@/components/layout/notifications";
+import { NotificationsTracker } from "@/components/notifications-tracker";
+import { SearchComponent } from "@/components/search";
 import { SignIn } from "@/components/sign-in";
 import Image from "next/image";
 import Link from "next/link";
-import { MobileSide } from "./mobile-sidebar";
-import { SearchComponent } from "@/components/search";
 
 export const Navbar = () => {
   const { data: session } = useSession();
@@ -34,14 +33,13 @@ export const Navbar = () => {
         )}
         <div>
           {session?.user ? (
-            <div className="flex items-center justify-end gap-3">
-              <span className="max-md:hidden flex items-center gap-x-3">
-                <Notifications session={session} />
+            <div className="flex items-center justify-end">
+              <span className="max-md:hidden flex items-center gap-x-4">
+                <NotificationsTracker />
                 {session?.user && <SearchComponent />}
                 <AvatarProfile placement="bottom-end" />
               </span>
               <div className="md:hidden flex gap-2 items-center">
-                <Notifications session={session} />
                 {session?.user && <SearchComponent />}
               </div>
             </div>

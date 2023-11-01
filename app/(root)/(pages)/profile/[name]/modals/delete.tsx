@@ -16,12 +16,10 @@ export const DeleteModal = ({
   isOpen,
   onOpenChange,
   user,
-  open,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
   user: TUser | null | undefined;
-  open: () => void;
 }) => {
   const [loading, setLoading] = useState(false);
   const deleteAction = async (close: () => void) => {
@@ -39,7 +37,7 @@ export const DeleteModal = ({
         onOpenChange={onOpenChange}
         classNames={{
           body: "py-6",
-          backdrop: "bg-red-500/20 backdrop-opacity-40",
+          backdrop: "bg-red-500/10 backdrop-opacity-20",
         }}
       >
         <ModalContent>
@@ -47,7 +45,7 @@ export const DeleteModal = ({
             <>
               <ModalHeader className="flex items-center flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <AiFillWarning className="text-danger h-5 w-5" />
+                  <AiFillWarning className="text-danger h-6 w-6" />
                   Confirm to delete account
                 </div>
                 <div className="flex items-center gap-2 text-small text-default-400">
@@ -59,17 +57,13 @@ export const DeleteModal = ({
                 restore it anymore.
               </ModalBody>
               <ModalFooter>
-                <Button
-                  variant="ghost"
-                  onPress={() => {
-                    onClose();
-                    open();
-                  }}
-                >
+                <Button variant="light" radius="sm" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
                   color="danger"
+                  variant="ghost"
+                  radius="sm"
                   isLoading={loading}
                   onPress={() => deleteAction(onClose)}
                 >

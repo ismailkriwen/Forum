@@ -45,7 +45,7 @@ export const SearchComponent = () => {
 
   return (
     <>
-      <Search className="w-5 h-5 cursor-pointer" onClick={onOpen} />
+      <Search className="w-6 h-6 cursor-pointer" onClick={onOpen} />
       <Modal
         size="sm"
         radius="sm"

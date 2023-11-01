@@ -6,7 +6,15 @@ const ProfilePage = async ({ params }: { params: { name: string } }) => {
   const session = await getAuthSession();
   const { name } = params;
 
-  return <>{session ? <Overview name={name} /> : <SignInRequirement />}</>;
+  return (
+    <>
+      {session && session?.user ? (
+        <Overview name={name} />
+      ) : (
+        <SignInRequirement />
+      )}
+    </>
+  );
 };
 
 export default ProfilePage;

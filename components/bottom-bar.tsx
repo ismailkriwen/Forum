@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { AvatarProfile } from "@/components/avatar-profile";
 import { unslug } from "@/lib/slugify";
+import { NotificationsTracker } from "./notifications-tracker";
 
 export const BottomBar = () => {
   const { data: session } = useSession();
@@ -36,6 +37,7 @@ export const BottomBar = () => {
             </Link>
           );
         })}
+        <NotificationsTracker />
         <AvatarProfile placement="top" />
       </div>
     </div>

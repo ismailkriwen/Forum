@@ -172,7 +172,7 @@ model Announcement {
 
 model Notification {
   id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  seen    Boolean @default(true)
+  seen    Boolean @default(false)
   type    String
   from    String?
   post    String? @db.ObjectId

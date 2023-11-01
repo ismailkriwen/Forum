@@ -100,10 +100,12 @@ const updatePassword = async ({
 }) => {
   const hashedPass = await hash(password, 12);
 
-  await prisma.user.update({
+  const pass = await prisma.user.update({
     where: { email },
     data: { password: hashedPass },
   });
+
+  return pass;
 };
 
 const userExistance = async ({

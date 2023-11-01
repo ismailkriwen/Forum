@@ -29,28 +29,48 @@ const notifyFollowers = async ({ post }: { post: TPost }) => {
 
 const getNotifications = async () => {
   const session = await getAuthSession();
-  if (!session) return;
+  if (!session || !session.user) return;
+
   const notifications = await prisma.notification.findMany({
     where: { user: { email: session.user.email } },
     orderBy: { id: "desc" },
   });
+
   return notifications;
 };
 
-const seenNotifications = async () => {
+const GetNotificationCount = async () => {
   const session = await getAuthSession();
-  if (!session) return;
-  const d = await prisma.user.update({
-    where: { email: session.user.email! },
-    data: {
-      notifications: {
-        updateMany: {
-          where: { seen: false },
-          data: { seen: true },
-        },
-      },
-    },
+  if (!session) return 0;
+
+  const { user } = session;
+  const count = await prisma.notification.count({
+    where: { user: { email: user.email }, seen: false },
   });
+
+  return count;
 };
 
-export { notifyFollowers, getNotifications, seenNotifications };
+const MarkNotificationsAsRead = async () => {
+  const session = await getAuthSession();
+  if (!session || !session.user) return;
+
+  const res = await prisma.notification.updateMany({
+    where: {
+      user: { email: session.user.email },
+      seen: false,
+    },
+    data: {
+      seen: true,
+    },
+  });
+
+  return res;
+};
+
+export {
+  notifyFollowers,
+  getNotifications,
+  MarkNotificationsAsRead,
+  GetNotificationCount,
+};
