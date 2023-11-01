@@ -83,7 +83,7 @@ export const EditModal = ({
         name: category?.name!,
         ranks,
       });
-      if (res) toast.error("Something went wrong.");
+      if (!res) toast.error("Something went wrong.");
       else {
         close();
         mutate();

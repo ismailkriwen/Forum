@@ -95,7 +95,8 @@ const updateColor = async ({
 }) => {
   const colorExists = await prisma.category.findFirst({ where: { name } });
 
-  if (colorExists) return { error: "Color already exists" };
+  if (colorExists && colorExists.color == color)
+    return { error: "Color already exists" };
 
   await prisma.category.update({
     where: { name },
