@@ -91,7 +91,7 @@ export const EditModal = ({
                 <MainSettings user={user} session={session} />
                 <div className="flex items-center justify-between w-full gap-5">
                   <Select
-                    defaultSelectedKeys={["Male"]}
+                    defaultSelectedKeys={[user?.gender!]}
                     disallowEmptySelection
                     onChange={({ target }) => setGender(target.value)}
                     size="sm"
