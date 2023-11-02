@@ -73,7 +73,12 @@ export const NotificationsComponent = () => {
           </div>
           <div className="space-y-3">
             {data?.map((notification) => (
-              <div key={notification.id} className="flex flex-col gap-1">
+              <div
+                key={notification.id}
+                className={`flex flex-col gap-1 ${
+                  notification.seen && "opacity-75"
+                }`}
+              >
                 <div>
                   {notification.type === "quote" ? (
                     <Fragment key={notification.id}>
