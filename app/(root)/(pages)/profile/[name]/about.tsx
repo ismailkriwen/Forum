@@ -5,6 +5,7 @@ import { Spinner, useDisclosure } from "@nextui-org/react";
 import { useQuery } from "react-query";
 import { FollowingsModal } from "./modals/followings";
 import { FollowersModal } from "./modals/follwers";
+import { user_date } from "@/lib/date";
 
 export const ProfileAbout = ({ name }: { name: string | null }) => {
   const {
@@ -37,6 +38,7 @@ export const ProfileAbout = ({ name }: { name: string | null }) => {
                   <div>Likes</div>
                   <div>Followings</div>
                   <div>Followers</div>
+                  <div>Joined</div>
                 </div>
                 <div className="w-full">
                   {info?.location !== "" && (
@@ -56,6 +58,12 @@ export const ProfileAbout = ({ name }: { name: string | null }) => {
                   >
                     {info?.followers.length}
                   </div>
+                  {info?.createdAt && (
+                    <div>
+                      {user_date(info?.createdAt).date} at{" "}
+                      {user_date(info?.createdAt).time}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

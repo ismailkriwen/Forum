@@ -7,7 +7,7 @@ import { Avatar, Button, useDisclosure } from "@nextui-org/react";
 import { Settings, Trash, UserMinus, UserPlus } from "lucide-react";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { ProfileAbout } from "../about";
 import { EditModal } from "../modals/edit";
@@ -22,6 +22,7 @@ export const Mobile = ({ name }: { name: string }) => {
   const { data: user } = useQuery({
     queryKey: ["profile_info__mobile"],
     queryFn: async () => await getUser({ name: unslug(name) }),
+    enabled: !!name,
   });
 
   const follow = async () => {

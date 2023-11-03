@@ -54,6 +54,7 @@ export const AvatarProfile = ({ placement }: Props) => {
         </DropdownTrigger>
         <DropdownMenu aria-label="profile-dropdown">
           <DropdownItem
+            textValue="username"
             showDivider
             className="!data-[hover]:bg-transparent !data-[hover]:bg-none"
           >
@@ -68,9 +69,12 @@ export const AvatarProfile = ({ placement }: Props) => {
               Admin
             </DropdownItem>
           ) : (
-            <DropdownItem className="w-0 p-0 hover:bg-transparent"></DropdownItem>
+            <DropdownItem
+              textValue="admin"
+              className="w-0 p-0 hover:bg-transparent"
+            ></DropdownItem>
           )}
-          <DropdownItem isReadOnly showDivider>
+          <DropdownItem isReadOnly showDivider textValue="dark mode">
             <div className="flex items-center justify-between">
               <div>Dark Mode</div>
               <Switch

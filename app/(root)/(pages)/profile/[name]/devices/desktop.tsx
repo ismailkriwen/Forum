@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { unslug } from "@/lib/slugify";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { Settings } from "lucide-react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { ProfileAbout } from "../about";
 import { Controls } from "../components/Controls";
 import { UserInfo } from "../components/UserInfo";
@@ -17,6 +17,7 @@ export const Desktop = ({ name }: { name: string }) => {
   const { data: user } = useQuery({
     queryKey: ["profile_info"],
     queryFn: async () => await getUser({ name: unslug(name) }),
+    enabled: !!name,
   });
 
   const {

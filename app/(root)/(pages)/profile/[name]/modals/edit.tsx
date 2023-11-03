@@ -1,6 +1,7 @@
 "use client";
 import { colors } from "@/constants";
 import {
+  updateBio,
   updateGender,
   updateLocation,
   updateRole,
@@ -14,6 +15,7 @@ import {
   ModalHeader,
   Select,
   SelectItem,
+  Textarea,
 } from "@nextui-org/react";
 import { Role, type User as TUser } from "@prisma/client";
 import { Edit } from "lucide-react";
@@ -36,6 +38,17 @@ export const EditModal = ({
   const [role, setRole] = useState<Role>();
   const [gender, setGender] = useState("");
   const [location, setLocation] = useState("");
+  const [bio, setBio] = useState("");
+
+  const saveBio = async (close: () => void) => {
+    try {
+      if (!bio || bio == user?.bio) return;
+      const res = await updateBio({ email: user?.email!, bio });
+      res ? toast.info("Updated") : toast.error("Something went wrong");
+    } finally {
+      close();
+    }
+  };
 
   const saveRole = async (close: () => void) => {
     try {
@@ -72,6 +85,7 @@ export const EditModal = ({
     setRole(user?.role as Role);
     setGender(user?.gender!);
     setLocation(user?.location!);
+    setBio(user?.bio!);
   }, [isOpen]);
 
   return (
@@ -87,8 +101,27 @@ export const EditModal = ({
                 </div>
                 <div className="text-default-400 text-small">{user?.name}</div>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="max-h-96 overflow-y-auto">
                 <MainSettings user={user} session={session} />
+                <div className="flex items-center justify-between w-full gap-5">
+                  <Textarea
+                    variant="underlined"
+                    radius="sm"
+                    size="sm"
+                    label="Bio"
+                    value={bio}
+                    onValueChange={setBio}
+                  />
+                  <Button
+                    variant="ghost"
+                    radius="sm"
+                    size="sm"
+                    onPress={() => saveBio(onClose)}
+                    isDisabled={bio == user?.bio}
+                  >
+                    Save
+                  </Button>
+                </div>
                 <div className="flex items-center justify-between w-full gap-5">
                   <Select
                     defaultSelectedKeys={[user?.gender!]}

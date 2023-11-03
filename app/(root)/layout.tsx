@@ -1,16 +1,15 @@
+import { BottomBar } from "@/components/bottom-bar";
 import { PageLoading } from "@/components/layout/loading";
 import { Navbar } from "@/components/layout/navbar/index";
 import { Pagination } from "@/components/layout/pagination/index";
 import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/constants";
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Announcement } from "./Announcement";
-import { BottomBar } from "@/components/bottom-bar";
-
-import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: {

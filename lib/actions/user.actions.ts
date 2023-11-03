@@ -315,6 +315,18 @@ const updateGender = async ({
   return res;
 };
 
+const updateBio = async ({ email, bio }: { email: string; bio: string }) => {
+  const session = await getAuthSession();
+  if (!session) return;
+
+  const res = await prisma.user.update({
+    where: { email },
+    data: { bio },
+  });
+
+  return res;
+};
+
 const updateLocation = async ({
   email,
   location,
@@ -353,4 +365,5 @@ export {
   updateGroups,
   updateGender,
   updateLocation,
+  updateBio,
 };

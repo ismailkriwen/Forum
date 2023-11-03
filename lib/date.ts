@@ -9,7 +9,8 @@ export const user_date = (date: Date): TDate => {
   const day = new Date(date).getDate();
 
   const hours = new Date(date).getHours();
-  const minutes = new Date(date).getMinutes();
+  let minutes: string | number = new Date(date).getMinutes();
+  if (minutes < 10) minutes = `0${minutes}`;
 
   return {
     date: `${month}/${day}/${year}`,
