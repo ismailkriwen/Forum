@@ -7,13 +7,13 @@ import { Avatar, Button, useDisclosure } from "@nextui-org/react";
 import { Settings, Trash, UserMinus, UserPlus } from "lucide-react";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { ProfileAbout } from "../about";
+import { DeleteModal } from "../modals/delete";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
 import { UploadImageModal } from "../modals/uploadImage";
-import { DeleteModal } from "../modals/delete";
 
 export const Mobile = ({ name }: { name: string }) => {
   const { data: session } = useSession();

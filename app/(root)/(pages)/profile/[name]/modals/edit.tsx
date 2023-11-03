@@ -165,41 +165,41 @@ export const EditModal = ({
                     Save
                   </Button>
                 </div>
-                {user?.name == session?.user?.name ||
-                  (session?.user?.groups.includes(Role.Admin) && (
-                    <div className="flex items-center justify-between gap-2 my-2">
-                      <Select
-                        defaultSelectedKeys={[user?.role as Role]}
-                        onChange={(e) => setRole(e.target.value as Role)}
-                        label="role-selection"
-                        labelPlacement="outside"
-                        size="sm"
-                        isRequired
-                        classNames={{ base: "w-1/2", label: "hidden" }}
-                        aria-label="Role selection"
-                      >
-                        {Object.keys(session?.user?.groups).map((role) => (
-                          <SelectItem
-                            key={role}
-                            value={role}
-                            /* @ts-ignore */
-                            color={colors[role]}
-                          >
-                            {role}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        radius="sm"
-                        onPress={() => saveRole(onClose)}
-                        isDisabled={role == user?.role}
-                      >
-                        Save
-                      </Button>
-                    </div>
-                  ))}
+                {(user?.name === session?.user?.name ||
+                  session?.user?.groups.includes(Role.Admin)) && (
+                  <div className="flex items-center justify-between gap-2 my-2">
+                    <Select
+                      defaultSelectedKeys={[user?.role as Role]}
+                      onChange={({ target }) => setRole(target.value as Role)}
+                      label="role-selection"
+                      labelPlacement="outside"
+                      size="sm"
+                      isRequired
+                      classNames={{ base: "w-1/2", label: "hidden" }}
+                      aria-label="Role selection"
+                    >
+                      {Object.values(user?.groups as Role[]).map((role) => (
+                        <SelectItem
+                          key={role}
+                          value={role}
+                          /* @ts-ignore */
+                          color={colors[role]}
+                        >
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      radius="sm"
+                      onPress={() => saveRole(onClose)}
+                      isDisabled={role == user?.role}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                )}
               </ModalBody>
             </>
           )}

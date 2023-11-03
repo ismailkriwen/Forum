@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { unslug } from "@/lib/slugify";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { Settings } from "lucide-react";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { ProfileAbout } from "../about";
 import { Controls } from "../components/Controls";
 import { UserInfo } from "../components/UserInfo";
