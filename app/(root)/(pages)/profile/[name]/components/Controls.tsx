@@ -1,11 +1,11 @@
 "use client";
 
 import { followUser, unfollowUser } from "@/lib/actions/user.actions";
-import { Button } from "@nextui-org/button";
-import { useDisclosure } from "@nextui-org/modal";
+import { Button } from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import { Role, User } from "@prisma/client";
 import { MessageSquarePlus, Trash, UserMinus, UserPlus } from "lucide-react";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 import { toast } from "react-toastify";
 import { DeleteModal } from "../modals/delete";
 import { NewMessage } from "../modals/msg";

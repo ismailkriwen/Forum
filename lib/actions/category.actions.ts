@@ -10,7 +10,7 @@ const getCategory = async (name: string) => {
     where: { name: { mode: "insensitive", equals: name } },
     include: {
       topics: {
-        include: { posts: true, categories: true },
+        include: { posts: true, category: true },
       },
     },
   });

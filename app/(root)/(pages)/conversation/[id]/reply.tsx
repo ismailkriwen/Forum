@@ -19,13 +19,13 @@ export const ReplyModal = ({
   onOpenChange,
   id,
   title,
-  mutate
+  mutate,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
   id: string;
   title: string;
-  mutate: () => void
+  mutate: () => void;
 }) => {
   const { data: session } = useSession();
   const [content, setContent] = useState("");
@@ -36,13 +36,13 @@ export const ReplyModal = ({
     const res = await addMessage({
       content,
       id,
-      email: session?.user?.email as string,
+      email: session?.user?.email!,
     });
     if (!res?.error) {
       close();
       setContent("");
       setError("");
-      mutate()
+      mutate();
     } else setError(res.error);
     setIsLoading(false);
   };

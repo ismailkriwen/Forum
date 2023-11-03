@@ -13,7 +13,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { Send } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Toaster, toast } from "sonner";
 
 import {
@@ -21,7 +21,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { getCategories } from "@/lib/actions/category.actions";
@@ -32,8 +31,8 @@ import { Category } from "@prisma/client";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { useQuery } from "react-query";
+import * as z from "zod";
 
 const formSchema = z.object({
   title: z.string().nonempty({ message: "Subject can't be empty" }),
@@ -145,7 +144,6 @@ export const NewPostModal = ({
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel />
                           <FormControl>
                             <Input
                               variant="bordered"
@@ -163,7 +161,6 @@ export const NewPostModal = ({
                       name="content"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel />
                           <FormControl>
                             <Textarea
                               variant="bordered"

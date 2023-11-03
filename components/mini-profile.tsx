@@ -1,4 +1,4 @@
-import { colors, textColors } from "@/constants";
+import { colors } from "@/constants";
 import { getUserByEmail } from "@/lib/actions/user.actions";
 import { Avatar, Link, Spinner } from "@nextui-org/react";
 import { Like, Post, User } from "@prisma/client";

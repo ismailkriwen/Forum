@@ -1,15 +1,14 @@
 "use client";
 
+import { useIsMobile } from "@/components/hooks/useIsMobile";
 import { GetNotificationCount } from "@/lib/actions/notifications";
 import { pusherClient } from "@/lib/pusher";
 import { Badge } from "@nextui-org/react";
 import { Bell } from "lucide-react";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
-import { useIsMobile } from "@/components/hooks/useIsMobile";
 
 type Props = {};
 

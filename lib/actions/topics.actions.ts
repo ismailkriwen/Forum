@@ -11,7 +11,7 @@ const createTopic = async ({
   title: string;
 }) => {
   const topic = await prisma.topic.create({
-    data: { title, categories: { connect: { id: categoryId } } },
+    data: { title, category: { connect: { id: categoryId } } },
   });
 
   return topic;
@@ -19,7 +19,7 @@ const createTopic = async ({
 
 const getTopics = async () => {
   const topics = await prisma.topic.findMany({
-    include: { posts: true, categories: true },
+    include: { posts: true, category: true },
   });
 
   return topics;
@@ -53,7 +53,7 @@ const CreateTopic = async ({
   const topic = await prisma.topic.create({
     data: {
       title,
-      categories: {
+      category: {
         connect: { name: cat },
       },
     },

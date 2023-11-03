@@ -40,6 +40,7 @@ const UserInfo = ({ email }: { email: string }) => {
   const { data: user } = useQuery({
     queryKey: ["profile_by_email__conversation__userInfo"],
     queryFn: async () => await getUserByEmail({ email }),
+    enabled: !!email,
   });
 
   return (

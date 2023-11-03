@@ -1,7 +1,6 @@
 "use client";
 
 import { useSignInContext } from "@/components/hooks/useSignIn";
-import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
@@ -9,7 +8,8 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/modal";
+  Button,
+} from "@nextui-org/react";
 import { AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

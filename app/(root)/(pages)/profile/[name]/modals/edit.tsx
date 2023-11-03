@@ -167,13 +167,12 @@ export const EditModal = ({
                 </div>
                 {(user?.name === session?.user?.name ||
                   session?.user?.groups.includes(Role.Admin)) && (
-                  <div className="flex items-center justify-between gap-2 my-2">
+                  <div className="flex items-center justify-between gap-x-2 my-2">
                     <Select
                       defaultSelectedKeys={[user?.role as Role]}
                       onChange={({ target }) => setRole(target.value as Role)}
-                      label="role-selection"
-                      labelPlacement="outside"
                       size="sm"
+                      labelPlacement="outside"
                       isRequired
                       classNames={{ base: "w-1/2", label: "hidden" }}
                       aria-label="Role selection"

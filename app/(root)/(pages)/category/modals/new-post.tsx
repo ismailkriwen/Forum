@@ -19,14 +19,13 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as z from "zod";
 import { CreateTopic } from "@/lib/actions/topics.actions";
 import { toast } from "react-toastify";
 import { notifyFollowers } from "@/lib/actions/notifications";
@@ -89,7 +88,6 @@ export const NewPostModal = ({
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel />
                           <FormControl>
                             <Input
                               variant="bordered"
@@ -107,7 +105,6 @@ export const NewPostModal = ({
                       name="content"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel />
                           <FormControl>
                             <Textarea
                               variant="bordered"

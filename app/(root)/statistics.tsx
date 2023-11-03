@@ -2,7 +2,6 @@
 import { textColors } from "@/constants";
 import { grabInfo } from "@/lib/actions/general.actions";
 import { Spinner, Tooltip } from "@nextui-org/react";
-import { Role } from "@prisma/client";
 import { File, MessageCircle, UserPlus, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -15,7 +14,6 @@ const Skeleton = () => (
 );
 
 export const Statistics = () => {
-  const roles = Object.keys(Role);
   const { data: info, isLoading } = useQuery({
     queryKey: ["statistics"],
     queryFn: async () => await grabInfo(),

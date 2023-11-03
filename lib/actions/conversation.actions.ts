@@ -4,7 +4,6 @@ import { prisma } from "@/lib/db";
 
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
-import { pusherServer } from "@/lib/pusher";
 
 const getConversations = async () => {
   const session = await getAuthSession();
@@ -58,8 +57,6 @@ const createMessage = async ({
     },
   });
 
-  pusherServer.trigger(`${receiver}`, "message:created", { creator });
-
   return conversation.id;
 };
 
@@ -80,6 +77,9 @@ const addMessage = async ({
   id: string;
   email: string;
 }) => {
+  const session = await getAuthSession();
+  if (!session || !session.user) return;
+
   const conversation = await prisma.conversation.findFirst({ where: { id } });
   if (!conversation) return;
 
@@ -100,4 +100,4 @@ const addMessage = async ({
   revalidatePath(`/conversation/${id}`);
 };
 
-export { getConversations, createMessage, getConversation, addMessage };
+export { addMessage, createMessage, getConversation, getConversations };

@@ -1,10 +1,11 @@
 "use client";
 
 import { Role } from "@prisma/client";
-import { LogOut, Moon, Settings, Sun } from "lucide-react";
+import { LogOut, Moon, Sun } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FaUserCog } from "react-icons/fa";
 
+import { useIsMobile } from "@/components/hooks/useIsMobile";
 import { useSignOutContext } from "@/components/hooks/useSignOut";
 import {
   Avatar,
@@ -14,10 +15,9 @@ import {
   DropdownTrigger,
   Switch,
 } from "@nextui-org/react";
+import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "./sign-out";
-import { useTheme } from "next-themes";
-import { useIsMobile } from "@/components/hooks/useIsMobile";
 
 type Props = {
   placement:

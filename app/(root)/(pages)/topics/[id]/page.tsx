@@ -2,9 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { TopicsIdPageComponent } from "./post";
-import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
 
-import { useDisclosure } from "@nextui-org/modal";
 import { useSignInContext } from "@/components/hooks/useSignIn";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";

@@ -18,7 +18,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { createPost } from "@/lib/actions/posts.actions";
@@ -96,7 +95,6 @@ export const ReplyModal = ({
                       name="content"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel />
                           <FormControl>
                             <Textarea
                               variant="bordered"

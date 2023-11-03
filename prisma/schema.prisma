@@ -151,7 +151,6 @@ model Conversation {
 model Message {
   id      String  @id @default(auto()) @map("_id") @db.ObjectId
   content String
-  seen    Boolean @default(false)
 
   conversationId String       @db.ObjectId
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)

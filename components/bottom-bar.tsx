@@ -1,12 +1,12 @@
 "use client";
 
-import { routes } from "@/components/layout/navbar/links";
+import { AvatarProfile } from "@/components/avatar-profile";
+import { NAV_LINKS } from "@/constants";
+import { unslug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
 import { Link } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { AvatarProfile } from "@/components/avatar-profile";
-import { unslug } from "@/lib/slugify";
 import { NotificationsTracker } from "./notifications-tracker";
 
 export const BottomBar = () => {
@@ -16,7 +16,7 @@ export const BottomBar = () => {
   return (
     <div className="md:hidden fixed bottom-0 inset-x-0 bg-neutral-100 dark:bg-neutral-900 shadow-[0_-4px_16px_-1px] dark:shadow-white/10 px-4 !z-50">
       <div className="container flex items-center justify-between w-full">
-        {routes.map((route) => {
+        {NAV_LINKS.map((route) => {
           const path =
             route.href === "/profile"
               ? `/profile/${session?.user?.name}`

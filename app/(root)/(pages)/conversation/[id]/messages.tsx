@@ -1,15 +1,14 @@
 "use client";
 
+import { MiniProfile } from "@/components/mini-profile";
 import { textColors } from "@/constants";
 import { getConversation } from "@/lib/actions/conversation.actions";
 import { user_date } from "@/lib/date";
 import {
-  Avatar,
   Button,
   Divider,
-  Link,
   Pagination,
-  useDisclosure,
+  useDisclosure
 } from "@nextui-org/react";
 import {
   type Conversation as TConversation,
@@ -18,9 +17,8 @@ import {
 } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Reply } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReplyModal } from "./reply";
-import { MiniProfile } from "@/components/mini-profile";
 
 interface IMessage extends TMessage {
   user: TUser;

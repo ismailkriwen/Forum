@@ -1,11 +1,10 @@
 "use client";
 
-import { colors } from "@/constants";
 import { getCategories } from "@/lib/actions/category.actions";
 import { latestPosts } from "@/lib/actions/posts.actions";
 import { user_date } from "@/lib/date";
 import { cn } from "@/lib/utils";
-import { Avatar, Chip, Link } from "@nextui-org/react";
+import { Avatar, Link } from "@nextui-org/react";
 import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";

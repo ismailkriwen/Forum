@@ -1,6 +1,6 @@
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
-import { Messages } from "./messages";
 import { redirect } from "next/navigation";
+import { Messages } from "./messages";
 
 const Message = async ({
   params,

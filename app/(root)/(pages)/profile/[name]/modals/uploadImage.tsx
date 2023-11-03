@@ -18,7 +18,7 @@ import { User } from "@prisma/client";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { z } from "zod";
+import * as z from "zod";
 
 const formSchema = z.object({
   profile_photo: z.string().url(),

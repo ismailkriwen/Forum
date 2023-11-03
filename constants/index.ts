@@ -1,3 +1,5 @@
+import { Home, Mail, User, Users } from "lucide-react";
+
 const SITE_NAME = "Kripsa";
 
 const textColors = {
@@ -14,4 +16,27 @@ const colors = {
   Hacker: "secondary",
 };
 
-export { textColors, colors, SITE_NAME };
+const NAV_LINKS = [
+  {
+    label: "Home",
+    href: "/",
+    icon: Home,
+  },
+  {
+    label: "Profile",
+    href: "/profile",
+    icon: User,
+  },
+  {
+    label: "Messages",
+    href: "/conversation",
+    icon: Mail,
+  },
+  {
+    label: "Members",
+    href: "/members",
+    icon: Users,
+  },
+];
+
+export { NAV_LINKS, SITE_NAME, colors, textColors };

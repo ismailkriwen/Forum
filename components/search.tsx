@@ -1,6 +1,6 @@
 "use client";
 
-import { colors, textColors } from "@/constants";
+import { textColors } from "@/constants";
 import { FetchGlobal } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import {
@@ -15,10 +15,10 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { Topic, User } from "@prisma/client";
-import { Scroll, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const SearchComponent = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();

@@ -3,7 +3,6 @@
 import { NewPostModal } from "@/components/actions/new-post-modal";
 import { useSignInContext } from "@/components/hooks/useSignIn";
 import { colors } from "@/constants";
-import { getCategory } from "@/lib/actions/category.actions";
 import { getTopics } from "@/lib/actions/topics.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import {

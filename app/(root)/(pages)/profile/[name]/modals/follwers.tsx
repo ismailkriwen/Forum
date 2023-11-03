@@ -2,8 +2,15 @@
 
 import { colors } from "@/constants";
 import { followersList, getUserByEmail } from "@/lib/actions/user.actions";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/modal";
-import { Avatar, Link, Spinner } from "@nextui-org/react";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Link,
+  Spinner,
+  Avatar,
+} from "@nextui-org/react";
 import { useQuery } from "react-query";
 
 type Props = {
