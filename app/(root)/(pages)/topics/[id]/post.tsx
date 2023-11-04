@@ -49,6 +49,7 @@ import { DeleteModal } from "./actions/delete";
 import { EditModal } from "./actions/edit";
 import { QuoteModal } from "./quote";
 import { ReplyModal } from "./reply";
+import { SettingsModal } from "./settings";
 
 export type TPost = {
   user: User;
@@ -104,7 +105,7 @@ const QuotePost = ({ id }: { id: string }) => {
               user_date(post?.createdAt as Date).date
             } at ${user_date(post?.createdAt as Date).time}`}</div>
           </div>
-          <pre className="pt-3 break-words max-w-full">{post?.content}</pre>
+          <div className="pt-3 break-words max-w-full">{post?.content}</div>
         </>
       )}
     </div>
@@ -132,6 +133,7 @@ export const TopicsIdPageComponent = ({
   const { data: topic, isLoading } = useQuery({
     queryKey: ["topic__id"],
     queryFn: async () => await getTopic(id),
+    enabled: !!id,
   });
 
   const { mutate } = useMutation({
@@ -156,6 +158,12 @@ export const TopicsIdPageComponent = ({
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
     onOpenChange: deleteOnOpenChange,
+  } = useDisclosure();
+
+  const {
+    isOpen: settingsIsOpen,
+    onOpen: settingsOnOpen,
+    onOpenChange: settingsOnOpenChange,
   } = useDisclosure();
 
   const like = async ({ id, user }: { id: string; user: string }) => {
@@ -199,15 +207,40 @@ export const TopicsIdPageComponent = ({
           <div className="my-4">
             <div className="bg-neutral-200 dark:bg-neutral-900 flex items-center justify-between px-8 py-2 mt-2">
               <div>{topic?.title}</div>
-              <Button
-                startContent={<Reply className="w-4 h-4" />}
-                variant="light"
-                size="sm"
-                radius="full"
-                onPress={onOpen}
-              >
-                Reply
-              </Button>
+              <div className="space-x-2">
+                {isMobile ? (
+                  <Button
+                    isIconOnly
+                    variant="flat"
+                    size="sm"
+                    radius="sm"
+                    onPress={onOpen}
+                  >
+                    <Reply className="w-4 h-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    startContent={<Reply className="w-4 h-4" />}
+                    variant="flat"
+                    size="sm"
+                    radius="sm"
+                    onPress={onOpen}
+                  >
+                    Reply
+                  </Button>
+                )}
+                {session?.user?.groups.includes(Role.Moderator) && (
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    radius="sm"
+                    variant="ghost"
+                    onPress={settingsOnOpen}
+                  >
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="bg-neutral-200 dark:bg-neutral-900 flex items-center gap-2 px-8 py-2 mt-2">
               <Button
@@ -453,11 +486,11 @@ export const TopicsIdPageComponent = ({
                     </div>
                   </div>
                   <Divider />
-                  <div className="py-2 px-6">
+                  <div className="py-2 px-6 max-w-full">
                     {!isLoading && post.reply && (
-                      <QuotePost id={post.postId as string} />
+                      <QuotePost id={post.postId!} />
                     )}
-                    <pre className="break-words pt-2">{post.content}</pre>
+                    <div>{post.content}</div>
                   </div>
                 </div>
                 {index % 2 !== 0 && <MiniProfile email={post.user.email!} />}
@@ -492,6 +525,11 @@ export const TopicsIdPageComponent = ({
             onOpenChange={deleteOnOpenChange}
             post={selectedPostToEdit as TPost}
             mutate={mutate}
+          />
+          <SettingsModal
+            isOpen={settingsIsOpen}
+            onOpenChange={settingsOnOpenChange}
+            topicId={id}
           />
         </>
       ) : (

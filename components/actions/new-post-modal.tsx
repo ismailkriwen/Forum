@@ -35,8 +35,8 @@ import { useQuery } from "react-query";
 import * as z from "zod";
 
 const formSchema = z.object({
-  title: z.string().nonempty({ message: "Subject can't be empty" }),
-  content: z.string().nonempty({ message: "Content can't be empty" }),
+  title: z.string().nonempty({ message: "Topic title can't be empty" }),
+  content: z.string().nonempty({ message: "Post content can't be empty" }),
 });
 
 export const NewPostModal = ({
@@ -96,20 +96,20 @@ export const NewPostModal = ({
                   className="space-y-4"
                   onSubmit={form.handleSubmit(onSubmit)}
                 >
-                  <ModalBody>
+                  <ModalBody className="max-h-96 overflow-y-auto">
                     {!cat &&
                       (fetchingCats ? (
                         <div className="w-full h-7 bg-neutral-600 animate-pulse rounded-md"></div>
                       ) : (
                         <Select
-                          defaultSelectedKeys={[categories[0]?.name || ""]}
+                          defaultSelectedKeys={[categories?.at(0)?.name || ""]}
                           disallowEmptySelection
                           labelPlacement="outside"
                           radius="sm"
                           aria-label="category-selection"
                           onChange={({ target }) =>
                             setCategorySelected(
-                              categories.find(
+                              categories?.find(
                                 (e) => e.name === target.value
                               ) as Category
                             )
@@ -148,7 +148,7 @@ export const NewPostModal = ({
                             <Input
                               variant="bordered"
                               radius="sm"
-                              label="Subject"
+                              label="Topic title"
                               {...field}
                             />
                           </FormControl>
@@ -158,14 +158,14 @@ export const NewPostModal = ({
                     />
                     <FormField
                       control={form.control}
-                      name="content"
+                      name="title"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
                             <Textarea
                               variant="bordered"
                               radius="sm"
-                              label="Content"
+                              label="Post content"
                               {...field}
                             />
                           </FormControl>

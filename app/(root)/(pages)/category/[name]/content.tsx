@@ -24,7 +24,7 @@ const TOPICS_PER_PAGE = 10;
 
 type TTopic = {
   posts: Post[];
-  categories: Category[];
+  category: Category;
 } & Topic;
 
 const UserInfo = ({ id }: { id: string }) => {
@@ -150,28 +150,36 @@ export const CategoryPageComponent = ({
               </Button>
             </div>
           </div>
-          <div className="z-0 overflow-y-auto">
-            {items?.map((topic: TTopic) => (
-              <div
-                className="flex items-center justify-between w-full"
-                key={topic.id}
-              >
-                <div className="w-full grid grid-cols-12 px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
-                  <Link
-                    color="foreground"
-                    underline="hover"
-                    href={`/topics/${topic.id}`}
-                    className=""
+          <div className="overflow-y-auto">
+            {items?.length == 0 ? (
+              <div className="text-center text-default-600">No Topics.</div>
+            ) : (
+              <>
+                {items?.map((topic: TTopic) => (
+                  <div
+                    className="flex items-center justify-between w-full"
+                    key={topic.id}
                   >
-                    {topic.title}
-                  </Link>
-                  <div className="text-center">{topic?.posts?.length}</div>
-                  <div className="text-right">
-                    <UserInfo id={topic?.posts[0]?.userId} />
+                    <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
+                      <Link
+                        color="foreground"
+                        underline="hover"
+                        href={`/topics/${topic.id}`}
+                        className="w-full text-left col-span-5"
+                      >
+                        {topic.title}
+                      </Link>
+                      <div className="text-center col-span-2">
+                        {topic?.posts?.length}
+                      </div>
+                      <div className="w-full col-span-5 text-right">
+                        <UserInfo id={topic?.posts[0]?.userId} />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </div>
           <div className="fixed max-md:bottom-16 bottom-3 right-3">
             <Tooltip

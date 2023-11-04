@@ -2,6 +2,7 @@
 
 import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
+import { Role } from "@prisma/client";
 
 const createTopic = async ({
   categoryId,
@@ -72,4 +73,36 @@ const CreateTopic = async ({
   return post;
 };
 
-export { createTopic, getTopics, getTopic, CreateTopic };
+const GetCategoryByTopicId = async ({ id }: { id: string }) => {
+  const topic = await prisma.topic.findFirst({
+    where: { id },
+    include: { category: true },
+  });
+
+  return topic?.category.name;
+};
+
+const DeleteTopic = async ({ id }: { id: string }) => {
+  const session = await getAuthSession();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.groups.includes(Role.Moderator)
+  )
+    return;
+
+  const topic = await prisma.topic.delete({
+    where: { id },
+  });
+
+  return topic;
+};
+
+export {
+  createTopic,
+  getTopics,
+  getTopic,
+  CreateTopic,
+  GetCategoryByTopicId,
+  DeleteTopic,
+};

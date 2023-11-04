@@ -121,11 +121,9 @@ export const PostsFeed = () => {
             )
           ) : (
             <>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} />
+              ))}
             </>
           )}
           {categories?.length === 0 && !fetchingCategories && (
@@ -140,10 +138,9 @@ export const PostsFeed = () => {
           </div>
           {isLoading ? (
             <div className="space-y-2">
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} />
+              ))}
             </div>
           ) : (
             <div className="space-y-2">

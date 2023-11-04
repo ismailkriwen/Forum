@@ -178,6 +178,9 @@ const deletePost = async (id: string) => {
   if (!session || !session.user.groups.includes(Role.Admin)) return;
 
   const de = await prisma.post.delete({ where: { id } });
+  const postsCount = await prisma.topic.count({ where: { id: de.topicId } });
+  if (postsCount == 0) await prisma.topic.delete({ where: { id: de.topicId } });
+
   return de;
 };
 

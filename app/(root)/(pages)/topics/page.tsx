@@ -11,13 +11,12 @@ import {
   Chip,
   Pagination,
   Tooltip,
-  Link as UILink,
+  Link,
   useDisclosure,
 } from "@nextui-org/react";
 import { Category, Post, Topic } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -26,7 +25,7 @@ const TOPICS_PER_PAGE = 10;
 
 type TTopic = {
   posts: Post[];
-  categories: Category[];
+  category: Category;
 } & Topic;
 
 const UserInfo = ({ id }: { id: string }) => {
@@ -36,7 +35,7 @@ const UserInfo = ({ id }: { id: string }) => {
   });
 
   return (
-    <UILink href={`/profile/${user?.name}`}>
+    <Link href={`/profile/${user?.name}`}>
       <Avatar
         src={user?.image as string}
         showFallback
@@ -47,7 +46,7 @@ const UserInfo = ({ id }: { id: string }) => {
             : "default"
         }
       />
-    </UILink>
+    </Link>
   );
 };
 
@@ -160,30 +159,34 @@ const TopicsPage = ({
                 className="flex items-center justify-between w-full"
                 key={topic.id}
               >
-                <div className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
-                  <Link href={`/topics/${topic.id}`}>
+                <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
+                  <Link
+                    color="foreground"
+                    href={`/topics/${topic.id}`}
+                    className="flex flex-col col-span-5 justify-start items-start w-full"
+                  >
                     <div className="pb-2 hover:underline">{topic.title}</div>
-                    <div className="flex gap-2 items-center">
-                      {topic.categories.map((cat) => (
-                        <Chip
-                          variant="bordered"
-                          size="sm"
-                          as={UILink}
-                          href={`/category/${cat.name}`}
-                          style={{
-                            color: cat.color as string,
-                            borderColor: cat.color as string,
-                          }}
-                          className="text-[10px]"
-                          key={cat.id}
-                        >
-                          {cat.name}
-                        </Chip>
-                      ))}
+                    <div>
+                      <Chip
+                        variant="bordered"
+                        size="sm"
+                        as={Link}
+                        href={`/category/${topic.category.name}`}
+                        style={{
+                          color: topic.category.color!,
+                          borderColor: topic.category.color!,
+                        }}
+                        key={topic.category.id}
+                        className="ml-1 text-[10px]"
+                      >
+                        {topic.category.name}
+                      </Chip>
                     </div>
                   </Link>
-                  <div className="text-center">{topic.posts.length}</div>
-                  <div className="text-right">
+                  <div className="text-center col-span-2">
+                    {topic.posts.length}
+                  </div>
+                  <div className="text-right col-span-5 w-full">
                     <UserInfo id={topic?.posts[0]?.userId} />
                   </div>
                 </div>
