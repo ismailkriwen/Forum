@@ -116,26 +116,43 @@ export const NotificationsComponent = () => {
                         {user_date(notification.createdAt).time}
                       </div>
                     </Fragment>
+                  ) : notification.type == "follow" ? (
+                    <Fragment key={notification.id}>
+                      <div>
+                        <Link
+                          href={`/profile/${notification.from}`}
+                          underline="hover"
+                          color="secondary"
+                        >
+                          {notification.from}
+                        </Link>{" "}
+                        Followed you
+                      </div>
+                      <div className="italic text-xs text-default-400 pt-1">
+                        {user_date(notification.createdAt).time} at{" "}
+                        {user_date(notification.createdAt).time}
+                      </div>
+                    </Fragment>
                   ) : (
-                    notification.type == "follow" && (
-                      <Fragment key={notification.id}>
-                        <div>
-                          <Link
-                            href={`/profile/${notification.from}`}
-                            underline="hover"
-                            color="secondary"
-                          >
-                            {notification.from}
-                          </Link>{" "}
-                          Followed you
-                        </div>
-                        <div className="italic text-xs text-default-400 pt-1">
-                          {user_date(notification.createdAt).time} at{" "}
-                          {user_date(notification.createdAt).time}
-                        </div>
-                      </Fragment>
-                    )
+                    <Fragment key={notification.id}>
+                      <div>
+                        <Link
+                          href={`/profile/${notification.from}`}
+                          underline="hover"
+                          color="secondary"
+                        >
+                          {notification.from}
+                        </Link>{" "}
+                        You follow posted in{" "}
+                        <Post id={notification.id} post={notification.post} />
+                      </div>
+                      <div className="italic text-xs text-default-400 pt-1">
+                        {user_date(notification.createdAt).time} at{" "}
+                        {user_date(notification.createdAt).time}
+                      </div>
+                    </Fragment>
                   )}
+                  )
                 </div>
               </div>
             ))}
