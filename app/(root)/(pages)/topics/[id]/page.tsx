@@ -1,38 +1,49 @@
-"use client";
-
 import { redirect } from "next/navigation";
 import { TopicsIdPageComponent } from "./post";
 
-import { useSignInContext } from "@/components/hooks/useSignIn";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { getAuthSession } from "@/app/api/auth/[...nextauth]/route";
+import { Metadata } from "next";
+import { GetTopicName } from "@/lib/actions/topics.actions";
+import { SignInAlert } from "@/components/SinInAlert";
 
-const TopicsIdPage = ({
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> => {
+  const topic = await GetTopicName({ id: params.id });
+
+  if (!topic?.title) {
+    return {
+      title: "Not Found",
+      description: "This page is not found.",
+    };
+  }
+  return {
+    title: topic?.title,
+  };
+};
+
+const TopicsIdPage = async ({
   params,
   searchParams,
 }: {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  if (!searchParams.page) redirect(`/topics/${params.id}?page=1`);
-  const { data: session } = useSession();
-  const { onOpen: signInOnOpen, setDismissable } = useSignInContext();
-
-  useEffect(() => {
-    if (!session?.user) {
-      setDismissable(false);
-      signInOnOpen();
-    }
-  }, [session]);
+  const session = await getAuthSession();
+  if (!searchParams.page) redirect(`?page=1`);
 
   return (
     <>
-      {session?.user && (
+      {session?.user ? (
         <TopicsIdPageComponent
           session={session}
           params={params}
           searchParams={searchParams}
         />
+      ) : (
+        <SignInAlert />
       )}
     </>
   );

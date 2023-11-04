@@ -158,7 +158,7 @@ export const NewPostModal = ({
                     />
                     <FormField
                       control={form.control}
-                      name="title"
+                      name="content"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>

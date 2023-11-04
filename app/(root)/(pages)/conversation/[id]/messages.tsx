@@ -4,12 +4,7 @@ import { MiniProfile } from "@/components/mini-profile";
 import { textColors } from "@/constants";
 import { getConversation } from "@/lib/actions/conversation.actions";
 import { user_date } from "@/lib/date";
-import {
-  Button,
-  Divider,
-  Pagination,
-  useDisclosure
-} from "@nextui-org/react";
+import { Button, Divider, Pagination, useDisclosure } from "@nextui-org/react";
 import {
   type Conversation as TConversation,
   type Message as TMessage,
@@ -19,6 +14,21 @@ import { ChevronLeft, ChevronRight, Reply } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReplyModal } from "./reply";
+import { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> => {
+  const conversation = await getConversation({ id: params.id });
+  if (!conversation)
+    return { title: "Not Found", description: "This page is not found" };
+
+  return {
+    title: conversation.title,
+  };
+};
 
 interface IMessage extends TMessage {
   user: TUser;

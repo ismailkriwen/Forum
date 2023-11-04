@@ -98,6 +98,9 @@ const DeleteTopic = async ({ id }: { id: string }) => {
   return topic;
 };
 
+const GetTopicName = async ({ id }: { id: string }) =>
+  await prisma.topic.findFirst({ where: { id } });
+
 export {
   createTopic,
   getTopics,
@@ -105,4 +108,5 @@ export {
   CreateTopic,
   GetCategoryByTopicId,
   DeleteTopic,
+  GetTopicName,
 };

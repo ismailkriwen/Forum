@@ -12,6 +12,7 @@ import "../globals.css";
 import { Announcement } from "./Announcement";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.kripsa.vercel.app/"),
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
