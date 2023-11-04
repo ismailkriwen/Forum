@@ -97,15 +97,15 @@ export const Categories = () => {
             onChange={onRowsPerPageChange}
             aria-label="rows per page"
             labelPlacement="outside"
-            defaultSelectedKeys={"5"}
+            defaultSelectedKeys={["5"]}
           >
-            <SelectItem key="5" value="5" defaultChecked>
+            <SelectItem key="5" value="5">
               5
             </SelectItem>
-            <SelectItem key="10" value="10" defaultChecked>
+            <SelectItem key="10" value="10">
               10
             </SelectItem>
-            <SelectItem key="15" value="15" defaultChecked>
+            <SelectItem key="15" value="15">
               15
             </SelectItem>
           </Select>
