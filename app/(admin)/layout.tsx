@@ -3,9 +3,9 @@ import { AdminProviders } from "@/app/(admin)/components/providers";
 import { Sidebar } from "@/app/(admin)/components/sidebar";
 import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/constants";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
-import { ToastContainer } from "react-toastify";
 
 export const metadata = {
   title: `${SITE_NAME} | Admin`,

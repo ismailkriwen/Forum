@@ -28,7 +28,7 @@ export const DeleteModal = ({
   const deleteAction = async (close: () => void) => {
     if (!category?.name) return;
     setLoading(true);
-    await deleteCategory({ name: category?.name });
+    await deleteCategory({ id: category?.id });
     close();
     mutate();
     setLoading(false);
@@ -41,7 +41,7 @@ export const DeleteModal = ({
         onOpenChange={onOpenChange}
         classNames={{
           body: "py-6",
-          backdrop: "bg-red-500/20 backdrop-opacity-40",
+          backdrop: "bg-red-500/10 backdrop-opacity-10",
         }}
       >
         <ModalContent>
@@ -61,13 +61,15 @@ export const DeleteModal = ({
                 restore it anymore.
               </ModalBody>
               <ModalFooter>
-                <Button variant="ghost" onPress={onClose}>
+                <Button variant="light" radius="sm" onPress={onClose}>
                   Cancel
                 </Button>
                 <Button
                   color="danger"
                   isLoading={loading}
                   onPress={() => deleteAction(onClose)}
+                  variant="ghost"
+                  radius="sm"
                 >
                   Delete
                 </Button>

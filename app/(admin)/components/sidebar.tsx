@@ -1,14 +1,14 @@
 "use client";
 
+import { useToggleSidebarContext } from "@/app/(admin)/components/context/useToggle";
 import { BarChart2, Home, LayoutList, LogOut } from "lucide-react";
 import Link from "next/link";
-import { useToggleSidebarContext } from "@/app/(admin)/components/context/useToggle";
 
-import { SignOut } from "@/components/sign-out";
-import { FaUsers } from "react-icons/fa";
-import { useTabContext } from "@/app/(admin)/components/context/useTab";
-import { AiOutlineClose } from "react-icons/ai";
 import { useSignOutContext } from "@/components/hooks/useSignOut";
+import { SignOut } from "@/components/sign-out";
+import { usePathname } from "next/navigation";
+import { AiOutlineClose } from "react-icons/ai";
+import { FaUsers } from "react-icons/fa";
 
 const iconSize = "w-6 h-6";
 const adminLinks = [
@@ -29,8 +29,8 @@ const adminLinks = [
 
 export const Sidebar = () => {
   const { open, setOpen } = useToggleSidebarContext();
-  const { tab, setTab } = useTabContext();
   const { onOpen } = useSignOutContext();
+  const pathname = usePathname();
 
   return (
     <>
@@ -68,23 +68,20 @@ export const Sidebar = () => {
           </div>
           <div className="mx-4 flex flex-col items-start justify-center gap-2">
             {adminLinks.map((link) => (
-              <div
+              <Link
+                href={`/${link.item}`}
                 key={link.item}
                 className={`px-6 py-4 rounded w-full flex items-start justify-center gap-2 ${
-                  tab === link.item
+                  pathname === `/${link.item}`
                     ? "bg-gray-500/20 dark:bg-gray-50/20"
                     : "hover:bg-gray-500/20 dark:hover:bg-gray-50/20"
                 } transition-colors cursor-pointer`}
-                onClick={() => {
-                  if (tab === link.item) return;
-                  setTab(link.item);
-                }}
               >
                 <div>{link.icon}</div>
                 <div className={`${!open && "hidden"} capitalize`}>
                   {link.item}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <div

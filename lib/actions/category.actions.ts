@@ -26,21 +26,11 @@ const getCategories = async () => {
   return categories;
 };
 
-const deleteCategory = async ({ name }: { name: string }) => {
+const deleteCategory = async ({ id }: { id: string }) => {
   const session = await getAuthSession();
   if (!session || !session.user.groups.includes(Role.Admin)) return;
 
-  await prisma.category.delete({ where: { name } });
-  await prisma.user.update({
-    where: { email: session?.user?.email as string },
-    data: {
-      logs: {
-        create: {
-          content: `${session?.user?.name} Deleted ${name}`,
-        },
-      },
-    },
-  });
+  await prisma.category.delete({ where: { id } });
 };
 
 const createCategory = async ({
