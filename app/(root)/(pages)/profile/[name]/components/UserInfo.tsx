@@ -16,7 +16,6 @@ export const UserInfo = ({ owner, user }: Props) => {
     isOpen: imgIsOpen,
     onOpen: imgOnOpen,
     onOpenChange: imgOnOpenChange,
-    onClose: imgOnClose,
   } = useDisclosure();
 
   return (
@@ -56,7 +55,6 @@ export const UserInfo = ({ owner, user }: Props) => {
           user={user}
           isOpen={imgIsOpen}
           onOpenChange={imgOnOpenChange}
-          onClose={imgOnClose}
         />
       )}
     </>

@@ -53,7 +53,6 @@ export const Mobile = ({ name }: { name: string }) => {
     isOpen: imgIsOpen,
     onOpen: imgOnOpen,
     onOpenChange: imgOnOpenChange,
-    onClose: imgOnClose,
   } = useDisclosure();
 
   const {
@@ -172,7 +171,6 @@ export const Mobile = ({ name }: { name: string }) => {
           user={user}
           isOpen={imgIsOpen}
           onOpenChange={imgOnOpenChange}
-          onClose={imgOnClose}
         />
       )}
       {owner ? (
