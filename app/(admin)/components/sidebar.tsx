@@ -14,15 +14,18 @@ const iconSize = "w-6 h-6";
 const adminLinks = [
   {
     item: "stats",
+    href: "/",
     icon: <BarChart2 className={iconSize} />,
   },
   {
     item: "users",
+    href: "/users",
     icon: <FaUsers className={iconSize} />,
   },
 
   {
     item: "categories",
+    href: "/categories",
     icon: <LayoutList className={iconSize} />,
   },
 ] as const;
@@ -69,10 +72,10 @@ export const Sidebar = () => {
           <div className="mx-4 flex flex-col items-start justify-center gap-2">
             {adminLinks.map((link) => (
               <Link
-                href={`/${link.item}`}
-                key={link.item}
+                href={`/${link.href}`}
+                key={link.href}
                 className={`px-6 py-4 rounded w-full flex items-start justify-center gap-2 ${
-                  pathname === `/${link.item}`
+                  pathname === `/${link.href}`
                     ? "bg-gray-500/20 dark:bg-gray-50/20"
                     : "hover:bg-gray-500/20 dark:hover:bg-gray-50/20"
                 } transition-colors cursor-pointer`}
