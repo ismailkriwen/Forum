@@ -44,7 +44,7 @@ export const Sidebar = () => {
       >
         <div className="flex flex-col justify-between h-full">
           <Link
-            href="/admin"
+            href="/"
             className={`max-md:hidden px-6 py-4 rounded hover:bg-gray-500/20 dark:hover:bg-gray-50/20 transition-colors mx-4 mt-4 flex items-start justify-center gap-2`}
           >
             <div>
