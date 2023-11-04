@@ -14,18 +14,18 @@ const iconSize = "w-6 h-6";
 const adminLinks = [
   {
     item: "stats",
-    href: "/",
+    href: "/admin",
     icon: <BarChart2 className={iconSize} />,
   },
   {
     item: "users",
-    href: "/users",
+    href: "/admin/users",
     icon: <FaUsers className={iconSize} />,
   },
 
   {
     item: "categories",
-    href: "/categories",
+    href: "/admin/categories",
     icon: <LayoutList className={iconSize} />,
   },
 ] as const;
@@ -44,7 +44,7 @@ export const Sidebar = () => {
       >
         <div className="flex flex-col justify-between h-full">
           <Link
-            href="/"
+            href="/admin"
             className={`max-md:hidden px-6 py-4 rounded hover:bg-gray-500/20 dark:hover:bg-gray-50/20 transition-colors mx-4 mt-4 flex items-start justify-center gap-2`}
           >
             <div>
@@ -72,10 +72,10 @@ export const Sidebar = () => {
           <div className="mx-4 flex flex-col items-start justify-center gap-2">
             {adminLinks.map((link) => (
               <Link
-                href={`/${link.href}`}
+                href={`${link.href}`}
                 key={link.href}
                 className={`px-6 py-4 rounded w-full flex items-start justify-center gap-2 ${
-                  pathname === `/${link.href}`
+                  pathname === `${link.href}`
                     ? "bg-gray-500/20 dark:bg-gray-50/20"
                     : "hover:bg-gray-500/20 dark:hover:bg-gray-50/20"
                 } transition-colors cursor-pointer`}

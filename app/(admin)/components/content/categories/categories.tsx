@@ -48,11 +48,13 @@ export const Categories = () => {
     onOpen: editOnOpen,
     onOpenChange: editOnOpenChange,
   } = useDisclosure();
+
   const {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
     onOpenChange: deleteOnOpenChange,
   } = useDisclosure();
+
   const {
     isOpen: newIsOpen,
     onOpen: newOnOpen,
@@ -202,7 +204,10 @@ export const Categories = () => {
                     <DropdownMenu aria-label="categories-dropdown">
                       <DropdownItem
                         startContent={<Pen className="w-4 h-4" />}
-                        onPress={editOnOpen}
+                        onPress={() => {
+                          setSelectedCategory(item);
+                          editOnOpen();
+                        }}
                       >
                         Edit
                       </DropdownItem>

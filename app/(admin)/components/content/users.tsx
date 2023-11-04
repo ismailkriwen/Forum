@@ -1,3 +1,5 @@
+"use client";
+
 import { PageLoading } from "@/components/layout/loading";
 import {
   deleteUser,
@@ -316,9 +318,9 @@ export const Users = () => {
               onChange={onRowsPerPageChange}
               aria-label="Rows per page"
               labelPlacement="outside"
-              defaultSelectedKeys={"5"}
+              defaultSelectedKeys={["5"]}
             >
-              <SelectItem key="5" value="5" defaultChecked>
+              <SelectItem key="5" value="5">
                 5
               </SelectItem>
               <SelectItem key="10" value="10">

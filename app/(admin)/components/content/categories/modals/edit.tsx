@@ -99,7 +99,7 @@ export const EditModal = ({
     setColor(category.color!);
     setDescription(category.description!);
     setRanks(category.ranks as Role[]);
-  }, [isOpen]);
+  }, [isOpen, category]);
 
   return (
     <>
@@ -168,10 +168,11 @@ export const EditModal = ({
                             key={i}
                             defaultSelected={ranks?.includes(role as Role)}
                             onChange={({ target }) => {
+                              // @ts-ignore
                               const arr = target.checked
                                 ? [...ranks, role]
                                 : ranks.filter((e) => e != role);
-                              setRanks(arr);
+                              setRanks(arr as Role[]);
                             }}
                             size="sm"
                           />

@@ -1,4 +1,4 @@
-import { Categories } from "@/app/(admin)/components/content/categories";
+import { Categories } from "@/app/(admin)/components/content/categories/categories";
 
 const CategoriesPage = () => {
   return <Categories />;
