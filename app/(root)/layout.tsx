@@ -27,7 +27,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       <body>
         <NextTopLoader
           height={3}
-          color="#27AE60"
+          color="#dc2626"
           easing="cubic-bezier(.35,.21,0,1)"
           showSpinner={false}
         />

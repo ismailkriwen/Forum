@@ -1,7 +1,7 @@
 "use client";
 
 import { useToggleSidebarContext } from "@/app/(admin)/components/context/useToggle";
-import { BarChart2, Home, LayoutList, LogOut } from "lucide-react";
+import { Award, BarChart2, Home, LayoutList, LogOut } from "lucide-react";
 import Link from "next/link";
 
 import { useSignOutContext } from "@/components/hooks/useSignOut";
@@ -22,11 +22,15 @@ const adminLinks = [
     href: "/admin/users",
     icon: <FaUsers className={iconSize} />,
   },
-
   {
     item: "categories",
     href: "/admin/categories",
     icon: <LayoutList className={iconSize} />,
+  },
+  {
+    item: "badges",
+    href: "/admin/badges",
+    icon: <Award className={iconSize} />,
   },
 ] as const;
 

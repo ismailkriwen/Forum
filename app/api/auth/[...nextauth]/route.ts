@@ -62,6 +62,7 @@ export const authOptions: NextAuthOptions = {
           role: user?.role,
           groups: user?.groups,
           image: user?.image,
+          balance: user?.balance,
         },
       };
     },

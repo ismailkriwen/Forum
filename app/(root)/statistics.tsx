@@ -30,7 +30,7 @@ export const Statistics = () => {
           </>
         ) : (
           <>
-            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center justify-center flex-1 gap-2 max-w-xs border-l-3 border-l-emerald-500 max-sm:py-4 mx-auto w-full">
+            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center justify-center flex-1 flex-col gap-2 max-w-xs border-l-3 border-l-emerald-500 max-sm:py-4 mx-auto w-full">
               <Tooltip
                 content="Topics"
                 placement="top"
@@ -38,11 +38,11 @@ export const Statistics = () => {
                 radius="sm"
                 size="sm"
               >
-                <MessageCircle className="w-8 h-8 text-emerald-500" />
+                <MessageCircle className="w-6 h-6 text-emerald-500" />
               </Tooltip>
               <span>{info?.topics}</span>
             </div>
-            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center justify-center flex-1 gap-2 max-w-xs border-l-3 border-l-lime-500 max-sm:py-4 mx-auto w-full">
+            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center flex-col justify-center flex-1 gap-2 max-w-xs border-l-3 border-l-lime-500 max-sm:py-4 mx-auto w-full">
               <Tooltip
                 content="Posts"
                 placement="top"
@@ -50,11 +50,11 @@ export const Statistics = () => {
                 radius="sm"
                 size="sm"
               >
-                <File className="w-8 h-8 text-lime-500" />
+                <File className="w-6 h-6 text-lime-500" />
               </Tooltip>
               <span>{info?.posts}</span>
             </div>
-            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center justify-center flex-1 gap-2 max-w-xs border-l-3 border-l-rose-600 max-sm:py-4 mx-auto w-full">
+            <div className="bg-zinc-200/70 dark:bg-neutral-800 rounded-sm px-6 py-2 flex items-center justify-center flex-col flex-1 gap-2 max-w-xs border-l-3 border-l-rose-600 max-sm:py-4 mx-auto w-full">
               <Tooltip
                 content="Total Users"
                 placement="top"
@@ -62,7 +62,7 @@ export const Statistics = () => {
                 radius="sm"
                 size="sm"
               >
-                <Users className="w-8 h-8 text-rose-600" />
+                <Users className="w-6 h-6 text-rose-600" />
               </Tooltip>
               <span>{info?.users}</span>
             </div>

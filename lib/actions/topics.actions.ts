@@ -79,7 +79,7 @@ const GetCategoryByTopicId = async ({ id }: { id: string }) => {
     include: { category: true },
   });
 
-  return topic?.category.name;
+  return topic;
 };
 
 const DeleteTopic = async ({ id }: { id: string }) => {
@@ -101,6 +101,11 @@ const DeleteTopic = async ({ id }: { id: string }) => {
 const GetTopicName = async ({ id }: { id: string }) =>
   await prisma.topic.findFirst({ where: { id } });
 
+const PinTopic = async ({ id }: { id: string }) =>
+  await prisma.topic.update({ where: { id }, data: { pinned: true } });
+const UnpinTopic = async ({ id }: { id: string }) =>
+  await prisma.topic.update({ where: { id }, data: { pinned: false } });
+
 export {
   createTopic,
   getTopics,
@@ -109,4 +114,6 @@ export {
   GetCategoryByTopicId,
   DeleteTopic,
   GetTopicName,
+  PinTopic,
+  UnpinTopic,
 };

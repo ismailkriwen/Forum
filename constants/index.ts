@@ -1,7 +1,6 @@
-import { Home, Mail, User, Users } from "lucide-react";
+import { Home, Mail, Store, User, Users } from "lucide-react";
 
 const SITE_NAME = "Kripsa";
-
 const textColors = {
   Admin: "text-danger",
   Moderator: "text-success",
@@ -36,6 +35,11 @@ const NAV_LINKS = [
     label: "Members",
     href: "/members",
     icon: Users,
+  },
+  {
+    label: "Shop",
+    href: "/shop",
+    icon: Store,
   },
 ];
 

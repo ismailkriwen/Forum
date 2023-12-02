@@ -14,6 +14,7 @@ import { DeleteModal } from "../modals/delete";
 import { EditModal } from "../modals/edit";
 import { NewMessage } from "../modals/msg";
 import { UploadImageModal } from "../modals/uploadImage";
+import { ProfileBadges } from "../components/ProfileBadges";
 
 export const Mobile = ({ name }: { name: string }) => {
   const { data: session } = useSession();
@@ -153,6 +154,7 @@ export const Mobile = ({ name }: { name: string }) => {
           </div>
         </div>
         <ProfileAbout name={unslug(name)} />
+        <ProfileBadges key={user?.email!} email={user?.email!} />
       </div>
       <EditModal
         user={user}

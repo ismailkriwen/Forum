@@ -26,7 +26,7 @@ export const NavbarLinks = () => {
             className={cn(
               "flex items-center justify-center transition-opacity",
               unslug(pathname) === path
-                ? "font-bold text-danger"
+                ? "font-bold text-secondary"
                 : "hover:opacity-80"
             )}
           >

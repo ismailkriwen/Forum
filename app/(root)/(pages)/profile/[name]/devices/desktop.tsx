@@ -9,6 +9,7 @@ import { ProfileAbout } from "../about";
 import { Controls } from "../components/Controls";
 import { UserInfo } from "../components/UserInfo";
 import { EditModal } from "../modals/edit";
+import { ProfileBadges } from "../components/ProfileBadges";
 
 export const Desktop = ({ name }: { name: string }) => {
   const { data: session } = useSession();
@@ -41,6 +42,7 @@ export const Desktop = ({ name }: { name: string }) => {
           </div>
         </div>
         <ProfileAbout name={unslug(name)} />
+        <ProfileBadges key={user?.email!} email={user?.email!} />
       </div>
       <EditModal
         user={user}

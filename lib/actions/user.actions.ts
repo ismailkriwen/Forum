@@ -10,7 +10,7 @@ import { pusherServer } from "@/lib/pusher";
 const getUserByEmail = async ({ email }: { email: string }) => {
   const res = await prisma.user.findFirst({
     where: { email },
-    include: { likes: true, posts: true, notifications: true },
+    include: { likes: true, posts: true, notifications: true, badges:true },
   });
   return res;
 };

@@ -18,6 +18,7 @@ import {
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "./sign-out";
+import { formatPrice } from "@/lib/utils";
 
 type Props = {
   placement:
@@ -53,12 +54,12 @@ export const AvatarProfile = ({ placement }: Props) => {
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="profile-dropdown">
-          <DropdownItem
-            textValue="username"
-            showDivider
-            className="!data-[hover]:bg-transparent !data-[hover]:bg-none"
-          >
-            {session?.user?.name}
+          <DropdownItem textValue="username" showDivider>
+            <div className="flex items-center justify-between">
+              <div>{session?.user?.name}</div>
+              {/* @ts-ignore */}
+              <div>{formatPrice(session?.user?.balance)}</div>
+            </div>
           </DropdownItem>
           {!pathname.includes("/admin") &&
           session?.user?.groups.includes(Role.Admin) ? (
@@ -76,7 +77,7 @@ export const AvatarProfile = ({ placement }: Props) => {
           )}
           <DropdownItem isReadOnly showDivider textValue="dark mode">
             <div className="flex items-center justify-between">
-              <div>Dark Mode</div>
+              <div>Theme</div>
               <Switch
                 defaultSelected
                 size="sm"

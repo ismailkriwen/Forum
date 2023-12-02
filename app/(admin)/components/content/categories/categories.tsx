@@ -146,7 +146,7 @@ export const Categories = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   if (loading) return <PageLoading />;
 

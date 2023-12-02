@@ -5,6 +5,7 @@ import { useSignInContext } from "@/components/hooks/useSignIn";
 import { colors } from "@/constants";
 import { getCategory } from "@/lib/actions/category.actions";
 import { getUserById } from "@/lib/actions/user.actions";
+import { cn } from "@/lib/utils";
 import {
   Avatar,
   Button,
@@ -12,9 +13,10 @@ import {
   Tooltip,
   Link,
   useDisclosure,
+  Divider,
 } from "@nextui-org/react";
 import { Category, Post, Topic } from "@prisma/client";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pin, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -46,6 +48,34 @@ const UserInfo = ({ id }: { id: string }) => {
         }
       />
     </Link>
+  );
+};
+
+const TopicComponent = ({ topic }: { topic: TTopic }) => {
+  return (
+    <div className="flex items-center justify-between w-full">
+      <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
+        <Link
+          color="foreground"
+          underline="hover"
+          href={`/topics/${topic.id}`}
+          className="w-full text-left col-span-5"
+        >
+          <div
+            className={cn({
+              "flex items-center gap-2": topic.pinned,
+            })}
+          >
+            {topic.pinned && <Pin className="w-4 h-4" />}
+            {topic.title}
+          </div>
+        </Link>
+        <div className="text-center col-span-2">{topic?.posts?.length}</div>
+        <div className="w-full col-span-5 text-right">
+          <UserInfo id={topic?.posts[0]?.userId} />
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -155,29 +185,19 @@ export const CategoryPageComponent = ({
               <div className="text-center text-default-600">No Topics.</div>
             ) : (
               <>
-                {items?.map((topic: TTopic) => (
-                  <div
-                    className="flex items-center justify-between w-full"
-                    key={topic.id}
-                  >
-                    <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
-                      <Link
-                        color="foreground"
-                        underline="hover"
-                        href={`/topics/${topic.id}`}
-                        className="w-full text-left col-span-5"
-                      >
-                        {topic.title}
-                      </Link>
-                      <div className="text-center col-span-2">
-                        {topic?.posts?.length}
-                      </div>
-                      <div className="w-full col-span-5 text-right">
-                        <UserInfo id={topic?.posts[0]?.userId} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {items
+                  ?.filter((e) => e.pinned)
+                  .map((topic) => (
+                    <TopicComponent key={topic.id} topic={topic} />
+                  ))}
+                {items && items?.filter((e) => e.pinned).length > 0 && (
+                  <Divider className="my-2" />
+                )}
+                {items
+                  ?.filter((e) => !e.pinned)
+                  .map((topic) => (
+                    <TopicComponent key={topic.id} topic={topic} />
+                  ))}
               </>
             )}
           </div>

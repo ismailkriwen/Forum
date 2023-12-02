@@ -4,17 +4,19 @@ import { NewPostModal } from "@/components/actions/new-post-modal";
 import { colors } from "@/constants";
 import { getTopics } from "@/lib/actions/topics.actions";
 import { getUserById } from "@/lib/actions/user.actions";
+import { cn } from "@/lib/utils";
 import {
   Avatar,
   Button,
   Chip,
+  Divider,
   Link,
   Pagination,
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { Category, Post, Topic } from "@prisma/client";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pin, Plus } from "lucide-react";
 import { Session } from "next-auth";
 import { redirect, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -49,6 +51,49 @@ const UserInfo = ({ id }: { id: string }) => {
   );
 };
 
+const TopicComponent = ({ topic }: { topic: TTopic }) => {
+  return (
+    <div className="flex items-center justify-between w-full">
+      <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
+        <Link
+          color="foreground"
+          href={`/topics/${topic.id}`}
+          className="flex flex-col col-span-5 justify-start items-start w-full"
+        >
+          <div
+            className={cn("pb-2 hover:underline", {
+              "flex items-center gap-2": topic.pinned,
+            })}
+          >
+            {topic.pinned && <Pin className="w-4 h-4" />}
+            {topic.title}
+          </div>
+          <div>
+            <Chip
+              variant="bordered"
+              size="sm"
+              as={Link}
+              href={`/category/${topic.category.name}`}
+              style={{
+                color: topic.category.color!,
+                borderColor: topic.category.color!,
+              }}
+              key={topic.category.id}
+              className="ml-1 text-[10px]"
+            >
+              {topic.category.name}
+            </Chip>
+          </div>
+        </Link>
+        <div className="text-center col-span-2">{topic.posts.length}</div>
+        <div className="text-right col-span-5 w-full">
+          <UserInfo id={topic?.posts[0]?.userId} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const TopicsPageComponent = ({
   searchParams,
   session,
@@ -56,8 +101,6 @@ export const TopicsPageComponent = ({
   searchParams: { [key: string]: string | string[] | undefined };
   session: Session | null;
 }) => {
-  if (!searchParams.page) redirect("/topics?page=1");
-
   const router = useRouter();
   const [topicsLoading, setTopicsLoading] = useState(false);
   const [switchingPages, setSwitchingPages] = useState(false);
@@ -145,44 +188,19 @@ export const TopicsPageComponent = ({
             </div>
           </div>
           <div className="z-0 overflow-y-auto">
-            {items.map((topic) => (
-              <div
-                className="flex items-center justify-between w-full"
-                key={topic.id}
-              >
-                <div className="w-full grid grid-cols-12 place-content-between place-items-center px-6 py-4 hover:bg-slate-300/50 dark:hover:bg-neutral-800/50 transition-colors">
-                  <Link
-                    color="foreground"
-                    href={`/topics/${topic.id}`}
-                    className="flex flex-col col-span-5 justify-start items-start w-full"
-                  >
-                    <div className="pb-2 hover:underline">{topic.title}</div>
-                    <div>
-                      <Chip
-                        variant="bordered"
-                        size="sm"
-                        as={Link}
-                        href={`/category/${topic.category.name}`}
-                        style={{
-                          color: topic.category.color!,
-                          borderColor: topic.category.color!,
-                        }}
-                        key={topic.category.id}
-                        className="ml-1 text-[10px]"
-                      >
-                        {topic.category.name}
-                      </Chip>
-                    </div>
-                  </Link>
-                  <div className="text-center col-span-2">
-                    {topic.posts.length}
-                  </div>
-                  <div className="text-right col-span-5 w-full">
-                    <UserInfo id={topic?.posts[0]?.userId} />
-                  </div>
-                </div>
-              </div>
-            ))}
+            {items
+              .filter((e) => e.pinned)
+              .map((topic) => (
+                <TopicComponent key={topic.id} topic={topic} />
+              ))}
+            {items.filter((e) => e.pinned).length > 0 && (
+              <Divider className="my-2" />
+            )}
+            {items
+              .filter((e) => !e.pinned)
+              .map((topic) => (
+                <TopicComponent key={topic.id} topic={topic} />
+              ))}
           </div>
           <div className="fixed bottom-14 right-3">
             <Tooltip

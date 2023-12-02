@@ -1,6 +1,8 @@
 "use client";
 
-import { createCategory } from "@/lib/actions/category.actions";
+import { SingleImageDropzone } from "@/components/SingleImageDropzone";
+import { CreateBadge } from "@/lib/actions/badge.actions";
+import { useEdgeStore } from "@/lib/edgestore";
 import {
   Button,
   Input,
@@ -11,10 +13,7 @@ import {
   ModalHeader,
   Switch,
   Textarea,
-  Tooltip,
 } from "@nextui-org/react";
-import { Role } from "@prisma/client";
-import { AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -29,15 +28,26 @@ export const NewModal = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [color, setColor] = useState("#000000");
   const [description, setDescription] = useState("");
-  const [ranks, setRanks] = useState<Role[]>([]);
+  const [price, setPrice] = useState("0");
+  const [limited, setLimited] = useState(false);
+  const [purchasable, setPurchasable] = useState(true);
+  const [file, setFile] = useState<File>();
+  const { edgestore } = useEdgeStore();
 
   const create = async (close: () => void) => {
-    if (!name || !color) return;
+    if (!name || !price || !file) return;
     try {
       setLoading(true);
-      const res = await createCategory({ name, color, description, ranks });
+      const img = await edgestore.publicFiles.upload({ file });
+      const res = await CreateBadge({
+        name,
+        price,
+        description,
+        image: img.url,
+        limited,
+        purchasable,
+      });
       if (res?.error) toast.error(res.error);
       else {
         close();
@@ -55,25 +65,16 @@ export const NewModal = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex items-center flex-col gap-2">
-                Create Category
+                Add Badge
               </ModalHeader>
               <ModalBody className="overflow-y-auto max-h-96">
                 <div className="flex items-center justify-between gap-5 max-md:flex-col">
                   <div className="flex items-start justify-between gap-3 flex-col md:flex-col">
                     <div className="text-default-400">Name</div>
-                    <div className="text-default-400">Color</div>
+                    <div className="text-default-400">Price</div>
                     <div className="text-default-400">Description</div>
-                    <div className="text-default-400 flex items-center gap-2">
-                      Ranks{" "}
-                      <Tooltip
-                        content="Allowed groups to this specific category."
-                        placement="top"
-                        showArrow
-                        size="sm"
-                      >
-                        <AlertCircle className="w-4 h-4" />
-                      </Tooltip>
-                    </div>
+                    <div className="text-default-400">Limited</div>
+                    <div className="text-default-400">Purchasable</div>
                   </div>
                   <div className="flex items-center justify-start gap-3 flex-col">
                     <Input
@@ -85,16 +86,13 @@ export const NewModal = ({
                       onValueChange={setName}
                     />
                     <Input
-                      type="color"
-                      name="color"
+                      type="number"
+                      name="price"
                       size="sm"
                       radius="sm"
-                      value={color}
+                      value={price}
                       variant="bordered"
-                      onValueChange={setColor}
-                      classNames={{
-                        inputWrapper: "border-none",
-                      }}
+                      onValueChange={setPrice}
                     />
                     <Textarea
                       variant="bordered"
@@ -103,29 +101,32 @@ export const NewModal = ({
                       value={description}
                       onValueChange={setDescription}
                     />
-                    <div className="flex items-center justify-between w-full gap-2">
-                      <div>
-                        {Object.keys(Role).map((role, i) => (
-                          <div key={i}>{role}</div>
-                        ))}
-                      </div>
-                      <div className="flex flex-col">
-                        {Object.keys(Role).map((role, i) => (
-                          <Switch
-                            key={i}
-                            defaultSelected={ranks.includes(role as Role)}
-                            onChange={({ target }) => {
-                              const arr = target.checked
-                                ? [...ranks, role]
-                                : ranks.filter((e) => e != role);
-                              setRanks(arr);
-                            }}
-                            size="sm"
-                          />
-                        ))}
-                      </div>
+                    <div className="w-full text-right">
+                      <Switch
+                        aria-label="Limited"
+                        size="sm"
+                        isSelected={limited}
+                        onValueChange={setLimited}
+                      />
+                    </div>
+                    <div className="w-full text-right">
+                      <Switch
+                        aria-label="Limited"
+                        size="sm"
+                        isSelected={purchasable}
+                        onValueChange={setPurchasable}
+                      />
                     </div>
                   </div>
+                </div>
+                <div className="w-full">
+                  <SingleImageDropzone
+                    width={200}
+                    height={100}
+                    value={file}
+                    onChange={(file) => setFile(file)}
+                    className="mx-auto"
+                  />
                 </div>
               </ModalBody>
               <ModalFooter>

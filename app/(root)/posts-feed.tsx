@@ -110,7 +110,7 @@ export const PostsFeed = () => {
                         >
                           {category.name}
                         </Link>
-                        <div className="italic text-default-500 py-1 text-small">
+                        <div className="text-default-500 py-1 text-small">
                           {category.description}
                         </div>
                       </div>

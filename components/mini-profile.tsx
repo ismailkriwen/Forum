@@ -1,12 +1,14 @@
 import { colors } from "@/constants";
 import { getUserByEmail } from "@/lib/actions/user.actions";
-import { Avatar, Link, Spinner } from "@nextui-org/react";
-import { Like, Post, User } from "@prisma/client";
+import { Avatar, Divider, Link, Spinner, Tooltip } from "@nextui-org/react";
+import { Like, Post, User, Badge } from "@prisma/client";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 type TUser = {
   posts: Post[];
   likes: Like[];
+  badges: Badge[];
 } & User;
 
 export const MiniProfile = ({ email }: { email: string }) => {
@@ -53,9 +55,30 @@ export const MiniProfile = ({ email }: { email: string }) => {
             showFallback
             className="w-20 h-20 text-large my-2"
           />
-          <div className="flex flex-col">
+          <div className="flex gap-2 items-center justify-center text-small">
             <div>Posts: {user?.posts?.length}</div>
+            <Divider orientation="vertical" />
             <div>Likes: {user?.likes?.length}</div>
+          </div>
+          <div className="flex flex-wrap my-1">
+            {user?.badges?.map((badge) => (
+              <Tooltip
+                size="sm"
+                radius="sm"
+                showArrow
+                content={badge.name}
+                key={badge.id}
+              >
+                <div className="w-6 h-6 relative">
+                  <Image
+                    src={badge.image}
+                    alt={badge.name}
+                    fill
+                    className="rounded-full object-contain"
+                  />
+                </div>
+              </Tooltip>
+            ))}
           </div>
         </div>
       )}

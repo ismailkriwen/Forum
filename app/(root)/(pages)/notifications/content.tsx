@@ -133,7 +133,7 @@ export const NotificationsComponent = () => {
                         {user_date(notification.createdAt).time}
                       </div>
                     </Fragment>
-                  ) : (
+                  ) : notification.type == "following_posted" ? (
                     <Fragment key={notification.id}>
                       <div>
                         <Link
@@ -146,6 +146,14 @@ export const NotificationsComponent = () => {
                         You follow posted in{" "}
                         <Post id={notification.id} post={notification.post} />
                       </div>
+                      <div className="italic text-xs text-default-400 pt-1">
+                        {user_date(notification.createdAt).time} at{" "}
+                        {user_date(notification.createdAt).time}
+                      </div>
+                    </Fragment>
+                  ) : (
+                    <Fragment key={notification.id}>
+                      <div>{notification.content}</div>
                       <div className="italic text-xs text-default-400 pt-1">
                         {user_date(notification.createdAt).time} at{" "}
                         {user_date(notification.createdAt).time}
