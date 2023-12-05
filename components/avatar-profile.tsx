@@ -7,6 +7,7 @@ import { FaUserCog } from "react-icons/fa";
 
 import { useIsMobile } from "@/components/hooks/useIsMobile";
 import { useSignOutContext } from "@/components/hooks/useSignOut";
+import { formatPrice } from "@/lib/utils";
 import {
   Avatar,
   Dropdown,
@@ -18,7 +19,6 @@ import {
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "./sign-out";
-import { formatPrice } from "@/lib/utils";
 
 type Props = {
   placement:
@@ -57,8 +57,10 @@ export const AvatarProfile = ({ placement }: Props) => {
           <DropdownItem textValue="username" showDivider>
             <div className="flex items-center justify-between">
               <div>{session?.user?.name}</div>
-              {/* @ts-ignore */}
-              <div>{formatPrice(session?.user?.balance)}</div>
+              <div onClick={() => router.push("/topup")}>
+                {/* @ts-ignore */}
+                {formatPrice(session?.user?.balance)}
+              </div>
             </div>
           </DropdownItem>
           {!pathname.includes("/admin") &&
