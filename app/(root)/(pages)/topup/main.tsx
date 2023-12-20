@@ -34,26 +34,26 @@ const SpecialOffer = ({ name }: { name: string }) => {
                   with our exclusive Top-Up Supercharger offer! 🚀✨
                 </span>
                 <span className="block font-bold pb-3">
-                  Here's what's in store for you:
+                  Here&apos;s what&apos;s in store for you:
                 </span>
               </div>
               <div>
                 <div>
                   1. <span className="font-bold">📱 Double Your Delight:</span>{" "}
-                  Top up today, and we'll DOUBLE your recharge amount! That's
-                  right – every dollar you invest will be instantly DOUBLED,
-                  giving you more talk time, more data, and more fun!
+                  Top up today, and we&apos;ll DOUBLE your recharge amount!
+                  That&apos;s right – every dollar you invest will be instantly
+                  DOUBLED, giving you more talk time, more data, and more fun!
                 </div>
                 <div>
                   2. <span className="font-bold">🎁 Exclusive Access:</span>{" "}
-                  You'll be able to purchase cool badges for you profile and
-                  mini-profile and many more coming soon!
+                  You&apos;ll be able to purchase cool badges for you profile
+                  and mini-profile and many more coming soon!
                 </div>
               </div>
               <div className="pt-1">
-                Don't miss out on this golden opportunity to supercharge your
-                mobile experience! Act fast, as this offer is available for a
-                limited time only.
+                Don&apos;t miss out on this golden opportunity to supercharge
+                your mobile experience! Act fast, as this offer is available for
+                a limited time only.
               </div>
             </ScrollShadow>
           </ModalBody>
