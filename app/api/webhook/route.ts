@@ -6,12 +6,6 @@ import { prisma } from "@/lib/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export const POST = async (req: any) => {
   let event;
 
