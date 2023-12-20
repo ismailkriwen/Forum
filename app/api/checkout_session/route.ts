@@ -1,15 +1,25 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY!);
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
-export const POST = async (req: Request, res: Response) => {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+export const POST = async (req: Request) => {
+  const { price } = await req.json();
+
   try {
     const session = await stripe.checkout.sessions.create({
+      mode: "payment",
       line_items: [
         {
-          price: `{{PRICE_ID}}`,
+          price,
+          quantity: 1,
         },
       ],
+      success_url: `${process.env.NEXTAUTH_URL}success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}topup`,
     });
+    return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    res.status(err.statusCode || 500).json(err.message);
+    console.log(err);
   }
 };

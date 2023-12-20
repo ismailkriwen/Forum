@@ -150,8 +150,6 @@ export const UserInventory = async ({ email }: { email?: string }) => {
         },
       });
 
-  console.log(email);
-
   return badges;
 };
 

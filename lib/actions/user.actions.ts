@@ -10,7 +10,7 @@ import { pusherServer } from "@/lib/pusher";
 const getUserByEmail = async ({ email }: { email: string }) => {
   const res = await prisma.user.findFirst({
     where: { email },
-    include: { likes: true, posts: true, notifications: true, badges:true },
+    include: { likes: true, posts: true, notifications: true, badges: true },
   });
   return res;
 };
@@ -345,6 +345,23 @@ const updateLocation = async ({
   return res;
 };
 
+const UpdateBalance = async (balance: number) => {
+  const session = await getAuthSession();
+  if (!session || !session.user) return { error: true };
+
+  const user = await prisma.user.findFirst({
+    where: { email: session.user.email },
+    select: { email: true, balance: true },
+  });
+
+  if (!user) return { error: true };
+
+  return await prisma.user.update({
+    where: { email: user.email! },
+    data: { balance: user.balance + balance },
+  });
+};
+
 export {
   getUserByEmail,
   getUserById,
@@ -366,4 +383,5 @@ export {
   updateGender,
   updateLocation,
   updateBio,
+  UpdateBalance,
 };
